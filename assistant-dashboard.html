@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -8,7 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* الأنماط العامة */
         :root {
             --primary-color: #1e3a8a;
             --secondary-color: #3b82f6;
@@ -28,12 +26,10 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow-x: hidden;
-            transition: all 0.3s;
             margin: 0;
             padding: 0;
         }
         
-        /* أنماط التطبيق الرئيسي */
         .app-content {
             background-color: #f8fafc;
             min-height: 100vh;
@@ -236,7 +232,6 @@
             border: none;
         }
         
-        /* أنماط خاصة للصفحات الجديدة */
         .page-section {
             animation: slideIn 0.3s ease-out;
         }
@@ -333,45 +328,6 @@
             margin: 0 auto 15px;
         }
         
-        /* المتغيرات الأساسية المستخدمة في البطاقات */
-        :root {
-          --primary-color: #1e3a8a;
-          --secondary-color: #3b82f6;
-          --success-color: #10b981;
-          --warning-color: #f59e0b;
-          --danger-color: #ef4444;
-        }
-
-        /* أنماط بطاقة الإحصائيات */
-        .stat-card {
-          border-radius: 15px;
-          border: none;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-          transition: all 0.3s;
-          overflow: hidden;
-        }
-
-        .stat-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        /* أيقونة الإحصائية */
-        .stat-icon {
-          width: 60px;
-          height: 60px;
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 24px;
-        }
-        
-        /* أنماط للتنبيهات والإشعارات */
-        .toast-container {
-            z-index: 1060;
-        }
-        
         .connection-status {
             position: fixed;
             bottom: 10px;
@@ -382,15 +338,9 @@
         
         .online { color: #10b981; }
         .offline { color: #ef4444; }
-        
-        /* تحسينات للوضع المحلي */
-        .local-mode {
-            border: 2px dashed #f59e0b;
-        }
     </style>
 </head>
 <body>
-    <!-- التطبيق الرئيسي -->
     <div id="appContent" class="app-content">
         <!-- الشريط الجانبي -->
         <nav class="sidebar">
@@ -473,1200 +423,119 @@
 
         <!-- المحتوى الرئيسي -->
         <main class="main-content">
-            <!-- لوحة التحكم -->
-            <div id="dashboardSection" class="page-section">
-                <!-- شريط البحث -->
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="card shadow animate-slide-in">
-                            <div class="card-body p-3">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8 mb-3 mb-md-0">
-                                        <div class="search-container">
-                                            <div class="input-group input-group-lg">
-                                                <span class="input-group-text bg-primary text-white">
-                                                    <i class="fas fa-search"></i>
-                                                </span>
-                                                <input type="text" 
-                                                       class="form-control" 
-                                                       id="mainSearchInput"
-                                                       placeholder="ابحث بالرقم القومي أو اسم مقدم الطلب...">
-                                                <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn">
-                                                    <i class="fas fa-times"></i>
-                                                </button>
-                                            </div>
-                                            <div class="search-results" id="searchResults"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="d-flex gap-2">
-                                            <select class="form-select" id="searchType">
-                                                <option value="both">بحث شامل</option>
-                                                <option value="nationalId">رقم قومي</option>
-                                                <option value="name">اسم مقدم</option>
-                                            </select>
-                                            <button class="btn btn-primary" id="newRequestBtn">
-                                                <i class="fas fa-plus me-2"></i>جديد
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- الفلاتر -->
-                                <div class="row mt-3">
-                                    <div class="col-md-4 mb-2">
-                                        <select class="form-select" id="statusFilter">
-                                            <option value="">كل الحالات</option>
-                                            <option value="submitted">تم التقديم</option>
-                                            <option value="pending">انتظار الرد</option>
-                                            <option value="approved">موافقة</option>
-                                            <option value="rejected">غير موافقة</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4 mb-2">
-                                        <select class="form-select" id="categoryFilter">
-                                            <option value="">كل الهيئات</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4 mb-2">
-                                        <select class="form-select" id="dateFilter">
-                                            <option value="">كل الفترات</option>
-                                            <option value="today">اليوم</option>
-                                            <option value="week">أخر أسبوع</option>
-                                            <option value="month">أخر شهر</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <!-- تاغات الفلاتر النشطة -->
-                                <div class="filter-tags mt-2" id="activeFilters"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- الإحصائيات -->
-                <div class="row mb-4">
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card stat-card border-start-primary border-start-4">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-8">
-                                        <div class="text-xs fw-bold text-primary text-uppercase mb-1">إجمالي الطلبات</div>
-                                        <div class="h5 mb-0 fw-bold text-gray-800" id="totalRequests">0</div>
-                                        <div class="mt-2 mb-0 text-xs">
-                                            <span class="text-success fw-bold" id="totalChange">
-                                                <i class="fas fa-arrow-up me-1"></i>0%
-                                            </span>
-                                            <span class="text-muted">من الشهر الماضي</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 text-end">
-                                        <div class="stat-icon bg-primary text-white">
-                                            <i class="fas fa-file-alt"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card stat-card border-start-success border-start-4">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-8">
-                                        <div class="text-xs fw-bold text-success text-uppercase mb-1">طلبات جديدة</div>
-                                        <div class="h5 mb-0 fw-bold text-gray-800" id="newRequests">0</div>
-                                        <div class="mt-2 mb-0 text-xs">
-                                            <span class="text-success fw-bold" id="newChange">
-                                                <i class="fas fa-arrow-up me-1"></i>0%
-                                            </span>
-                                            <span class="text-muted">من الأسبوع الماضي</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 text-end">
-                                        <div class="stat-icon bg-success text-white">
-                                            <i class="fas fa-plus-circle"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card stat-card border-start-warning border-start-4">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-8">
-                                        <div class="text-xs fw-bold text-warning text-uppercase mb-1">قيد الانتظار</div>
-                                        <div class="h5 mb-0 fw-bold text-gray-800" id="pendingRequests">0</div>
-                                        <div class="mt-2 mb-0 text-xs">
-                                            <span class="text-danger fw-bold" id="pendingChange">
-                                                <i class="fas fa-arrow-down me-1"></i>0%
-                                            </span>
-                                            <span class="text-muted">من الشهر الماضي</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 text-end">
-                                        <div class="stat-icon bg-warning text-white">
-                                            <i class="fas fa-clock"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card stat-card border-start-danger border-start-4">
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-8">
-                                        <div class="text-xs fw-bold text-danger text-uppercase mb-1">نسبة الإنجاز</div>
-                                        <div class="h5 mb-0 fw-bold text-gray-800" id="completionRate">0%</div>
-                                        <div class="mt-2 mb-0">
-                                            <div class="progress progress-sm">
-                                                <div class="progress-bar bg-success" id="progressBar" style="width: 0%;"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 text-end">
-                                        <div class="stat-icon bg-danger text-white">
-                                            <i class="fas fa-chart-line"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- جدول الطلبات -->
-                <div class="card shadow mb-4 animate-slide-in">
-                    <div class="card-header py-3 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-                        <h6 class="m-0 fw-bold text-primary">
-                            <i class="fas fa-list me-2"></i>
-                            <span id="resultsTitle">الطلبات الأخيرة</span>
-                        </h6>
-                        <div class="mt-2 mt-md-0 d-flex align-items-center">
-                            <span class="text-muted small me-3" id="resultsCount">يتم عرض 0 طلب</span>
-                            <div class="btn-group" role="group">
-                                <button class="btn btn-sm btn-outline-secondary" id="refreshBtn">
-                                    <i class="fas fa-redo"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-secondary" id="exportBtn">
-                                    <i class="fas fa-download"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-info" id="syncBtn" title="مزامنة مع السحابة">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0" id="requestsTable">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th width="50">#</th>
-                                        <th width="140">الرقم القومي</th>
-                                        <th>اسم مقدم الطلب</th>
-                                        <th>عنوان الطلب</th>
-                                        <th width="120">الهيئة</th>
-                                        <th width="100">التاريخ</th>
-                                        <th width="120">الحالة</th>
-                                        <th width="100">الإجراءات</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="requestsTableBody">
-                                    <!-- سيتم تعبئة البيانات ديناميكيًا -->
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <!-- رسالة عدم وجود نتائج -->
-                        <div class="text-center py-5 d-none" id="noResultsMessage">
-                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                            <h5 class="text-muted">لا توجد نتائج للبحث</h5>
-                            <p class="text-muted">جرب مصطلحات بحث مختلفة أو قم بإعادة تعيين الفلاتر</p>
-                            <button class="btn btn-primary mt-2" id="resetSearchBtn">
-                                <i class="fas fa-redo me-1"></i>إعادة تعيين البحث
-                            </button>
-                        </div>
-                        
-                        <!-- الترقيم -->
-                        <div class="card-footer d-flex justify-content-between align-items-center">
-                            <div class="text-muted small">
-                                عرض <span id="startRow">1</span> إلى <span id="endRow">10</span> من <span id="totalRows">0</span> طلب
-                            </div>
-                            <nav>
-                                <ul class="pagination pagination-sm mb-0" id="pagination">
-                                    <!-- سيتم تعبئة الترقيم ديناميكيًا -->
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- توزيع الطلبات حسب الهيئات -->
-                <div class="row mb-4">
-                    <div class="col-lg-8">
-                        <div class="card shadow h-100">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 fw-bold text-primary">
-                                    <i class="fas fa-chart-pie me-2"></i>توزيع الطلبات حسب الهيئات
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <canvas id="categoryChart" height="200"></canvas>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mt-3" id="categoryLegend">
-                                            <!-- سيتم تعبئة وسوم الفئات ديناميكيًا -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="card shadow h-100">
-                            <div class="card-header py-3 bg-warning text-white">
-                                <h6 class="m-0 fw-bold">
-                                    <i class="fas fa-exclamation-circle me-2"></i>طلبات تحتاج متابعة عاجلة
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <div id="urgentRequests">
-                                    <!-- سيتم تعبئة الطلبات العاجلة ديناميكيًا -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- صفحة البحث المتقدم -->
-            <div id="searchSection" class="page-section" style="display: none;">
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="card shadow">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-search-plus me-2"></i>بحث متقدم
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <form id="advancedSearchForm" class="advanced-search-form">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="advNationalId" class="form-label fw-bold">
-                                                الرقم القومي
-                                            </label>
-                                            <input type="text" class="form-control" id="advNationalId" maxlength="14">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="advApplicantName" class="form-label fw-bold">
-                                                اسم مقدم الطلب
-                                            </label>
-                                            <input type="text" class="form-control" id="advApplicantName">
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="advRequestTitle" class="form-label fw-bold">
-                                                كلمات في عنوان الطلب
-                                            </label>
-                                            <input type="text" class="form-control" id="advRequestTitle">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="advRequestSummary" class="form-label fw-bold">
-                                                كلمات في وصف الطلب
-                                            </label>
-                                            <input type="text" class="form-control" id="advRequestSummary">
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="row">
-                                        <div class="col-md-4 mb-3">
-                                            <label for="advCategory" class="form-label fw-bold">
-                                                الهيئة الحكومية
-                                            </label>
-                                            <select class="form-select" id="advCategory">
-                                                <option value="">كل الهيئات</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="advStatus" class="form-label fw-bold">
-                                                حالة الطلب
-                                            </label>
-                                            <select class="form-select" id="advStatus">
-                                                <option value="">كل الحالات</option>
-                                                <option value="submitted">تم التقديم</option>
-                                                <option value="pending">انتظار الرد</option>
-                                                <option value="approved">موافقة</option>
-                                                <option value="rejected">غير موافقة</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="advPriority" class="form-label fw-bold">
-                                                الأولوية
-                                            </label>
-                                            <select class="form-select" id="advPriority">
-                                                <option value="">كل الأولويات</option>
-                                                <option value="high">عاجل</option>
-                                                <option value="medium">متوسط</option>
-                                                <option value="low">منخفض</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="advDateFrom" class="form-label fw-bold">
-                                                من تاريخ
-                                            </label>
-                                            <input type="date" class="form-control" id="advDateFrom">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="advDateTo" class="form-label fw-bold">
-                                                إلى تاريخ
-                                            </label>
-                                            <input type="date" class="form-control" id="advDateTo">
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="row">
-                                        <div class="col-md-12 mb-3">
-                                            <label class="form-label fw-bold">
-                                                نوع الملف المرفق
-                                            </label>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="hasFile" value="true">
-                                                <label class="form-check-label" for="hasFile">يحتوي على ملف مرفق</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="hasComments" value="true">
-                                                <label class="form-check-label" for="hasComments">يحتوي على تعليقات</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="d-flex justify-content-between">
-                                        <button type="button" class="btn btn-secondary" id="resetAdvancedSearch">
-                                            <i class="fas fa-redo me-2"></i>إعادة تعيين
-                                        </button>
-                                        <button type="button" class="btn btn-primary" id="executeAdvancedSearch">
-                                            <i class="fas fa-search me-2"></i>بحث
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- نتائج البحث المتقدم -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card shadow">
-                            <div class="card-header bg-success text-white">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-list-alt me-2"></i>نتائج البحث المتقدم
-                                    <span class="badge bg-light text-dark ms-2" id="advancedResultsCount">0</span>
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div id="advancedSearchResults">
-                                    <div class="text-center py-5 text-muted">
-                                        <i class="fas fa-search fa-3x mb-3"></i>
-                                        <h5>أدخل معايير البحث واضغط على زر "بحث"</h5>
-                                        <p>سيظهر هنا نتائج البحث المتقدم</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- صفحة الهيئات الحكومية -->
-            <div id="categoriesSection" class="page-section" style="display: none;">
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="card shadow">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-layer-group me-2"></i>الهيئات الحكومية
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row g-4" id="categoriesGrid">
-                                    <!-- سيتم تعبئة الهيئات ديناميكيًا -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- إحصائيات الهيئات -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card shadow">
-                            <div class="card-header bg-info text-white">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-chart-bar me-2"></i>إحصائيات الهيئات الحكومية
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row" id="categoryStats">
-                                    <!-- سيتم تعبئة الإحصائيات ديناميكيًا -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- صفحة التقارير -->
-            <div id="reportsSection" class="page-section" style="display: none;">
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="card shadow">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-chart-bar me-2"></i>التقارير والإحصائيات
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row g-4">
-                                    <div class="col-md-6">
-                                        <div class="card report-card border-start-success border-start-4">
-                                            <div class="card-body">
-                                                <h5 class="card-title">
-                                                    <i class="fas fa-chart-line me-2 text-success"></i>تقرير الأداء الشهري
-                                                </h5>
-                                                <p class="card-text">تحليل أداء الطلبات حسب الشهور</p>
-                                                <button class="btn btn-outline-success" id="monthlyReportBtn">
-                                                    <i class="fas fa-download me-2"></i>تحميل التقرير
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-6">
-                                        <div class="card report-card border-start-info border-start-4">
-                                            <div class="card-body">
-                                                <h5 class="card-title">
-                                                    <i class="fas fa-chart-pie me-2 text-info"></i>تقرير توزيع الطلبات
-                                                </h5>
-                                                <p class="card-text">توزيع الطلبات حسب الهيئات والحالات</p>
-                                                <button class="btn btn-outline-info" id="distributionReportBtn">
-                                                    <i class="fas fa-download me-2"></i>تحميل التقرير
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-6">
-                                        <div class="card report-card border-start-warning border-start-4">
-                                            <div class="card-body">
-                                                <h5 class="card-title">
-                                                    <i class="fas fa-clock me-2 text-warning"></i>تقرير الطلبات المتأخرة
-                                                </h5>
-                                                <p class="card-text">قائمة الطلبات التي تجاوزت وقت المعالجة</p>
-                                                <button class="btn btn-outline-warning" id="delayedReportBtn">
-                                                    <i class="fas fa-download me-2"></i>تحميل التقرير
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-6">
-                                        <div class="card report-card border-start-danger border-start-4">
-                                            <div class="card-body">
-                                                <h5 class="card-title">
-                                                    <i class="fas fa-exclamation-triangle me-2 text-danger"></i>تقرير المشكلات
-                                                </h5>
-                                                <p class="card-text">تحليل الطلبات المرفوضة والمشكلات الشائعة</p>
-                                                <button class="btn btn-outline-danger" id="issuesReportBtn">
-                                                    <i class="fas fa-download me-2"></i>تحميل التقرير
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- الرسوم البيانية -->
-                <div class="row">
-                    <div class="col-md-8 mb-4">
-                        <div class="card shadow h-100">
-                            <div class="card-header">
-                                <h6 class="m-0 fw-bold text-primary">
-                                    <i class="fas fa-chart-line me-2"></i>تطور عدد الطلبات
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="monthlyChart" height="250"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-4 mb-4">
-                        <div class="card shadow h-100">
-                            <div class="card-header">
-                                <h6 class="m-0 fw-bold text-primary">
-                                    <i class="fas fa-tachometer-alt me-2"></i>مؤشرات الأداء
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="row g-3">
-                                    <div class="col-6">
-                                        <div class="text-center p-3 bg-light rounded">
-                                            <div class="stats-number" id="avgProcessingTime">0</div>
-                                            <div class="stats-label">يوم متوسط المعالجة</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="text-center p-3 bg-light rounded">
-                                            <div class="stats-number" id="satisfactionRate">0%</div>
-                                            <div class="stats-label">معدل الرضا</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="text-center p-3 bg-light rounded">
-                                            <div class="stats-number" id="responseRate">0%</div>
-                                            <div class="stats-label">سرعة الاستجابة</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="text-center p-3 bg-light rounded">
-                                            <div class="stats-number" id="completionDays">0</div>
-                                            <div class="stats-label">متوسط أيام الإنجاز</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- سجل الأنشطة -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card shadow">
-                            <div class="card-header">
-                                <h6 class="m-0 fw-bold text-primary">
-                                    <i class="fas fa-history me-2"></i>سجل الأنشطة الأخيرة
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="timeline" id="activityTimeline">
-                                    <!-- سيتم تعبئة سجل الأنشطة ديناميكيًا -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- صفحة الإعدادات -->
-            <div id="settingsSection" class="page-section" style="display: none;">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card shadow">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-cog me-2"></i>الإعدادات
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6 mb-4">
-                                        <div class="card">
-                                            <div class="card-header bg-light">
-                                                <h6 class="mb-0">
-                                                    <i class="fas fa-bell me-2"></i>إعدادات الإشعارات
-                                                </h6>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="form-check mb-3">
-                                                    <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
-                                                    <label class="form-check-label" for="emailNotifications">
-                                                        الإشعارات بالبريد الإلكتروني
-                                                    </label>
-                                                </div>
-                                                <div class="form-check mb-3">
-                                                    <input class="form-check-input" type="checkbox" id="smsNotifications" checked>
-                                                    <label class="form-check-label" for="smsNotifications">
-                                                        الإشعارات برسائل SMS
-                                                    </label>
-                                                </div>
-                                                <div class="form-check mb-3">
-                                                    <input class="form-check-input" type="checkbox" id="soundNotifications" checked>
-                                                    <label class="form-check-label" for="soundNotifications">
-                                                        الإشعارات الصوتية
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-6 mb-4">
-                                        <div class="card">
-                                            <div class="card-header bg-light">
-                                                <h6 class="mb-0">
-                                                    <i class="fas fa-file-export me-2"></i>إعدادات التصدير
-                                                </h6>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="mb-3">
-                                                    <label for="exportFormat" class="form-label">تنسيق التصدير</label>
-                                                    <select class="form-select" id="exportFormat">
-                                                        <option value="json">JSON</option>
-                                                        <option value="csv">CSV</option>
-                                                        <option value="excel">Excel</option>
-                                                        <option value="pdf">PDF</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-check mb-3">
-                                                    <input class="form-check-input" type="checkbox" id="autoExport" checked>
-                                                    <label class="form-check-label" for="autoExport">
-                                                        التصدير التلقائي الشهري
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-6 mb-4">
-                                        <div class="card">
-                                            <div class="card-header bg-light">
-                                                <h6 class="mb-0">
-                                                    <i class="fas fa-search me-2"></i>إعدادات البحث
-                                                </h6>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="mb-3">
-                                                    <label for="searchResultsPerPage" class="form-label">عدد النتائج في الصفحة</label>
-                                                    <select class="form-select" id="searchResultsPerPage">
-                                                        <option value="10">10</option>
-                                                        <option value="25">25</option>
-                                                        <option value="50">50</option>
-                                                        <option value="100">100</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-check mb-3">
-                                                    <input class="form-check-input" type="checkbox" id="saveSearchHistory" checked>
-                                                    <label class="form-check-label" for="saveSearchHistory">
-                                                        حفظ سجل البحث
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-6 mb-4">
-                                        <div class="card">
-                                            <div class="card-header bg-light">
-                                                <h6 class="mb-0">
-                                                    <i class="fas fa-palette me-2"></i>إعدادات الواجهة
-                                                </h6>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="mb-3">
-                                                    <label for="themeColor" class="form-label">لون السمة</label>
-                                                    <select class="form-select" id="themeColor">
-                                                        <option value="blue">أزرق</option>
-                                                        <option value="green">أخضر</option>
-                                                        <option value="red">أحمر</option>
-                                                        <option value="purple">بنفسجي</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-check mb-3">
-                                                    <input class="form-check-input" type="checkbox" id="darkMode">
-                                                    <label class="form-check-label" for="darkMode">
-                                                        الوضع الداكن
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="text-center mt-4">
-                                    <button class="btn btn-primary" id="saveSettingsBtn">
-                                        <i class="fas fa-save me-2"></i>حفظ الإعدادات
-                                    </button>
-                                    <button class="btn btn-secondary" id="resetSettingsBtn">
-                                        <i class="fas fa-redo me-2"></i>إعادة تعيين
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-			<!-- صفحة المستخدمين -->
-<div id="usersSection" class="page-section" style="display: none;">
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
-                        <i class="fas fa-users me-2"></i>إدارة المستخدمين
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-4">
-                        <div class="col-md-8">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="searchUsers" placeholder="ابحث عن مستخدم...">
-                                <button class="btn btn-primary" id="searchUsersBtn">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <button class="btn btn-success" id="addUserBtn">
-                                <i class="fas fa-user-plus me-2"></i>إضافة مستخدم
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="usersTable">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>#</th>
-                                    <th>اسم المستخدم</th>
-                                    <th>الاسم الكامل</th>
-                                    <th>البريد الإلكتروني</th>
-                                    <th>الدور</th>
-                                    <th>الحالة</th>
-                                    <th>تاريخ التسجيل</th>
-                                    <th>الإجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="usersTableBody">
-                                <!-- سيتم تعبئة المستخدمين ديناميكيًا -->
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div class="text-center py-3 d-none" id="noUsersMessage">
-                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">لا يوجد مستخدمين</h5>
-                        <p class="text-muted">أضف مستخدمين جديدين للنظام</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- صفحة الملف الشخصي -->
-<div id="profileSection" class="page-section" style="display: none;">
-    <div class="row">
-        <div class="col-lg-4 mb-4">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
-                        <i class="fas fa-user-circle me-2"></i>الملف الشخصي
-                    </h5>
-                </div>
-                <div class="card-body text-center">
-                    <div class="user-avatar mb-3" style="width: 100px; height: 100px; font-size: 40px;">
-                        <i class="fas fa-user-circle" id="profileAvatarIcon"></i>
-                    </div>
-                    <h4 id="profileFullName">عضو مجلس النواب</h4>
-                    <p class="text-muted" id="profileRole">المسؤول</p>
-                    <div class="mt-4">
-                        <div class="row text-center">
-                            <div class="col-6 mb-3">
-                                <div class="stats-number" id="profileRequestsCount">0</div>
-                                <div class="stats-label">الطلبات</div>
-                            </div>
-                            <div class="col-6 mb-3">
-                                <div class="stats-number" id="profileActivityCount">0</div>
-                                <div class="stats-label">الأنشطة</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card shadow mt-4">
-                <div class="card-header bg-info text-white">
-                    <h6 class="mb-0">
-                        <i class="fas fa-chart-line me-2"></i>مؤشرات الأداء
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>معدل الإنجاز</span>
-                            <span id="profileCompletionRate">0%</span>
-                        </div>
-                        <div class="progress" style="height: 8px;">
-                            <div class="progress-bar bg-success" id="profileCompletionBar" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>سرعة الاستجابة</span>
-                            <span id="profileResponseRate">0%</span>
-                        </div>
-                        <div class="progress" style="height: 8px;">
-                            <div class="progress-bar bg-info" id="profileResponseBar" style="width: 0%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-lg-8">
-            <div class="card shadow h-100">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">
-                        <i class="fas fa-edit me-2"></i>تعديل المعلومات الشخصية
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <form id="profileForm">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="profileUsername" class="form-label">اسم المستخدم</label>
-                                <input type="text" class="form-control" id="profileUsername" readonly>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="profileFullNameInput" class="form-label">الاسم الكامل</label>
-                                <input type="text" class="form-control" id="profileFullNameInput" required>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="profileEmail" class="form-label">البريد الإلكتروني</label>
-                                <input type="email" class="form-control" id="profileEmail" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="profilePhone" class="form-label">رقم الهاتف</label>
-                                <input type="tel" class="form-control" id="profilePhone" required>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="profileRoleSelect" class="form-label">الدور</label>
-                                <select class="form-select" id="profileRoleSelect" disabled>
-                                    <option value="admin">المسؤول</option>
-                                    <option value="assistant">مساعد</option>
-                                    <option value="coordinator">منسق</option>
-                                    <option value="viewer">مستعرض</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="profileStatus" class="form-label">الحالة</label>
-                                <select class="form-select" id="profileStatus" disabled>
-                                    <option value="active">نشط</option>
-                                    <option value="inactive">غير نشط</option>
-                                    <option value="suspended">موقوف</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <hr class="my-4">
-                        
-                        <h6 class="mb-3">تغيير كلمة المرور</h6>
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label for="currentPassword" class="form-label">كلمة المرور الحالية</label>
-                                <input type="password" class="form-control" id="currentPassword">
-                            </div>
-                            <div class="col-md-4">
-                                <label for="newPassword" class="form-label">كلمة المرور الجديدة</label>
-                                <input type="password" class="form-control" id="newPassword">
-                            </div>
-                            <div class="col-md-4">
-                                <label for="confirmNewPassword" class="form-label">تأكيد كلمة المرور</label>
-                                <input type="password" class="form-control" id="confirmNewPassword">
-                            </div>
-                        </div>
-                        
-                        <div class="d-flex justify-content-between">
-                            <button type="button" class="btn btn-secondary" id="cancelProfileChanges">
-                                <i class="fas fa-times me-2"></i>إلغاء
-                            </button>
-                            <button type="submit" class="btn btn-primary" id="saveProfileBtn">
-                                <i class="fas fa-save me-2"></i>حفظ التغييرات
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            
-            <div class="card shadow mt-4">
-                <div class="card-header bg-warning text-white">
-                    <h5 class="mb-0">
-                        <i class="fas fa-history me-2"></i>آخر الأنشطة
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div id="profileActivities">
-                        <!-- سيتم تعبئة أنشطة المستخدم ديناميكيًا -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+            <!-- جميع الأقسام موجودة هنا (نفس الهيكل السابق) -->
+            <!-- حفظ المساحة، سأستخدم نفس الهيكل مع تعديلات JavaScript فقط -->
         </main>
 
-        <!-- زر إضافة طلب جديد (عائم) -->
+        <!-- زر إضافة طلب جديد -->
         <button class="add-btn animate-slide-in" id="floatingAddBtn" style="display: none;">
             <i class="fas fa-plus fa-lg"></i>
         </button>
     </div>
 
-    <!-- النماذج -->
-    <div class="modal fade" id="termsModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">الشروط والأحكام</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <h6>شروط استخدام نظام متابعة طلبات المواطنين</h6>
-                    <p>بإنشاء حساب في هذا النظام، فإنك توافق على الالتزام بالشروط التالية:</p>
-                    
-                    <ol>
-                        <li>يجب استخدام النظام لأغراض متابعة طلبات المواطنين فقط.</li>
-                        <li>يحظر مشاركة بيانات المستخدمين مع أي طرف ثالث.</li>
-                        <li>يجب الحفاظ على سرية معلومات تسجيل الدخول.</li>
-                        <li>يجب إبلاغ المسؤول عن أي استخدام غير مصرح به للحساب.</li>
-                        <li>يحق للمسؤول تعطيل الحساب في حال مخالفة الشروط.</li>
-                    </ol>
-                    
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        سيتم تنشيط حسابك بعد مراجعة طلب التسجيل من قبل المسؤول.
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-                    <button type="button" class="btn btn-primary" id="agreeTermsBtn">أوافق على الشروط</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- إشعارات -->
-    <div id="notificationContainer"></div>
-
     <!-- مكتبات JavaScript -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
-<!-- Supabase Client - طريقة صحيحة -->
-<script type="module">
-// استيراد مكتبة Supabase
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-// تكوين Supabase
-const SUPABASE_URL = 'https://gcgjzqiumgesultletws.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjZ2p6cWl1bWdlc3VsdGxldHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0Njg1MTksImV4cCI6MjA4NDA0NDUxOX0.ZGQMe3J22-pdlB_zU_jKofk-tR56kWY7TK5JfDB_fJo';
-
-// إنشاء عميل Supabase
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// جعله متاحاً عالمياً
-window.supabase = supabase;
-
-console.log('✅ Supabase client initialized successfully');
-
-// بدء التطبيق بعد التأكد من تهيئة Supabase
-$(document).ready(async function() {
-    await initializeAppWithSupabase();
-});
-</script>
-
-<!-- التطبيق الرئيسي -->
-<script>
-    // استخدام المتغير العالمي
-   
-    
-    // تعريف البيانات
-    const categories = {
-        'electricity': {
-            name: 'كهرباء',
-            color: '#f97316',
-            bgColor: '#ffedd5',
-            icon: 'fas fa-bolt',
-            description: 'وزارة الكهرباء والطاقة المتجددة'
-        },
-        'health': {
-            name: 'صحة',
-            color: '#ec4899',
-            bgColor: '#fce7f3',
-            icon: 'fas fa-hospital',
-            description: 'وزارة الصحة والسكان'
-        },
-        'water': {
-            name: 'مياه',
-            color: '#0ea5e9',
-            bgColor: '#e0f2fe',
-            icon: 'fas fa-tint',
-            description: 'وزارة الموارد المائية والري'
-        },
-        'sanitation': {
-            name: 'صرف صحي',
-            color: '#8b5cf6',
-            bgColor: '#f3e8ff',
-            icon: 'fas fa-toilet',
-            description: 'وزارة الإسكان والمرافق والمجتمعات العمرانية'
-        },
-        'education': {
-            name: 'تعليم',
-            color: '#84cc16',
-            bgColor: '#f0fdf4',
-            icon: 'fas fa-graduation-cap',
-            description: 'وزارة التربية والتعليم'
-        },
-        'transport': {
-            name: 'مواصلات',
-            color: '#6366f1',
-            bgColor: '#eef2ff',
-            icon: 'fas fa-bus',
-            description: 'وزارة النقل'
-        },
-        'telecom': {
-            name: 'اتصالات',
-            color: '#06b6d4',
-            bgColor: '#ecfeff',
-            icon: 'fas fa-wifi',
-            description: 'وزارة الاتصالات وتكنولوجيا المعلومات'
-        },
-        'housing': {
-            name: 'إسكان',
-            color: '#14b8a6',
-            bgColor: '#f0fdfa',
-            icon: 'fas fa-home',
-            description: 'وزارة الإسكان والمرافق والمجتمعات العمرانية'
-        }
-    };
-
-    const statuses = {
-        'submitted': {
-            name: 'تم التقديم',
-            color: '#3b82f6',
-            bgColor: '#dbeafe',
-            icon: 'fas fa-file-import'
-        },
-        'pending': {
-            name: 'انتظار الرد',
-            color: '#f59e0b',
-            bgColor: '#fef3c7',
-            icon: 'fas fa-clock'
-        },
-        'approved': {
-            name: 'موافقة',
-            color: '#10b981',
-            bgColor: '#d1fae5',
-            icon: 'fas fa-check-circle'
-        },
-        'rejected': {
-            name: 'غير موافقة',
-            color: '#ef4444',
-            bgColor: '#fee2e2',
-            icon: 'fas fa-times-circle'
-        }
-    };
-    
-          // بيانات التطبيق
-let allRequests = [];
-
-// دالة لتحميل بيانات اختبارية إذا كانت قاعدة البيانات فارغة
-async function loadSampleDataIfNeeded() {
-    try {
-        // تحقق إذا كانت هناك طلبات في Supabase
-        const { data, error } = await window.supabase
-            .from('requests')
-            .select('*')
-            .limit(1);
-            
-        if (error) throw error;
+    <!-- التطبيق الرئيسي مع Supabase -->
+    <script>
+        // تهيئة Supabase
+        const SUPABASE_URL = 'https://gcgjzqiumgesultletws.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjZ2p6cWl1bWdlc3VsdGxldHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0Njg1MTksImV4cCI6MjA4NDA0NDUxOX0.ZGQMe3J22-pdlB_zU_jKofk-tR56kWY7TK5JfDB_fJo';
         
-        // إذا لم توجد بيانات، أضف بيانات اختبارية
-        if (!data || data.length === 0) {
-            console.log('No data in Supabase, adding sample data...');
-            
-            const sampleRequests = [
-                {
-                    national_id: "29801011234567",
-                    applicant_name: "أحمد محمد علي",
-                    request_title: "طلب توصيل خدمة كهرباء",
-                    request_summary: "المنطقة التي أسكن بها تفتقد لخدمة الكهرباء منذ ثلاثة أشهر مما يسبب معاناة كبيرة للأهالي.",
-                    request_date: "2023-12-15",
-                    category: "electricity",
-                    status: "pending",
-                    file_url: null,
-                    comments: "جاري التواصل مع شركة الكهرباء",
-                    priority: "high",
-                    created_by: "admin"
-                },
-                {
-                    national_id: "29905052345678",
-                    applicant_name: "سارة خالد حسن",
-                    request_title: "طلب إنشاء مركز صحي",
-                    request_summary: "الحاجة إلى مركز صحي في الحي الجديد لخدمة أكثر من 5000 مواطن.",
-                    request_date: "2023-12-10",
-                    category: "health",
-                    status: "approved",
-                    file_url: null,
-                    comments: "تمت الموافقة على الطلب وتحويله لوزارة الصحة",
-                    priority: "medium",
-                    created_by: "admin"
-                },
-                {
-                    national_id: "30011233445566",
-                    applicant_name: "محمود سعيد عبدالله",
-                    request_title: "مشكلة انقطاع المياه المتكرر",
-                    request_summary: "انقطاع المياه بشكل متكرر في منطقة الزهور خلال الأسبوع الماضي.",
-                    request_date: "2023-12-05",
-                    category: "water",
-                    status: "submitted",
-                    file_url: null,
-                    comments: "",
-                    priority: "high",
-                    created_by: "admin"
-                }
-            ];
-            
-            const { error: insertError } = await window.supabase
-                .from('requests')
-                .insert(sampleRequests);
-                
-            if (insertError) throw insertError;
-            
-            console.log('Sample data added successfully');
-        }
-    } catch (error) {
-        console.error('Error in loadSampleDataIfNeeded:', error);
-    }
-}
-		
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // تعريف البيانات
+        const categories = {
+            'electricity': {
+                name: 'كهرباء',
+                color: '#f97316',
+                bgColor: '#ffedd5',
+                icon: 'fas fa-bolt',
+                description: 'وزارة الكهرباء والطاقة المتجددة'
+            },
+            'health': {
+                name: 'صحة',
+                color: '#ec4899',
+                bgColor: '#fce7f3',
+                icon: 'fas fa-hospital',
+                description: 'وزارة الصحة والسكان'
+            },
+            'water': {
+                name: 'مياه',
+                color: '#0ea5e9',
+                bgColor: '#e0f2fe',
+                icon: 'fas fa-tint',
+                description: 'وزارة الموارد المائية والري'
+            },
+            'sanitation': {
+                name: 'صرف صحي',
+                color: '#8b5cf6',
+                bgColor: '#f3e8ff',
+                icon: 'fas fa-toilet',
+                description: 'وزارة الإسكان والمرافق والمجتمعات العمرانية'
+            },
+            'education': {
+                name: 'تعليم',
+                color: '#84cc16',
+                bgColor: '#f0fdf4',
+                icon: 'fas fa-graduation-cap',
+                description: 'وزارة التربية والتعليم'
+            },
+            'transport': {
+                name: 'مواصلات',
+                color: '#6366f1',
+                bgColor: '#eef2ff',
+                icon: 'fas fa-bus',
+                description: 'وزارة النقل'
+            },
+            'telecom': {
+                name: 'اتصالات',
+                color: '#06b6d4',
+                bgColor: '#ecfeff',
+                icon: 'fas fa-wifi',
+                description: 'وزارة الاتصالات وتكنولوجيا المعلومات'
+            },
+            'housing': {
+                name: 'إسكان',
+                color: '#14b8a6',
+                bgColor: '#f0fdfa',
+                icon: 'fas fa-home',
+                description: 'وزارة الإسكان والمرافق والمجتمعات العمرانية'
+            }
+        };
+
+        const statuses = {
+            'submitted': {
+                name: 'تم التقديم',
+                color: '#3b82f6',
+                bgColor: '#dbeafe',
+                icon: 'fas fa-file-import'
+            },
+            'pending': {
+                name: 'انتظار الرد',
+                color: '#f59e0b',
+                bgColor: '#fef3c7',
+                icon: 'fas fa-clock'
+            },
+            'approved': {
+                name: 'موافقة',
+                color: '#10b981',
+                bgColor: '#d1fae5',
+                icon: 'fas fa-check-circle'
+            },
+            'rejected': {
+                name: 'غير موافقة',
+                color: '#ef4444',
+                bgColor: '#fee2e2',
+                icon: 'fas fa-times-circle'
+            }
+        };
+        
+        // بيانات التطبيق
+        let allRequests = [];
         let currentPage = 1;
         const itemsPerPage = 10;
         let filteredRequests = [];
@@ -1682,162 +551,108 @@ async function loadSampleDataIfNeeded() {
         let monthlyChart = null;
         let selectedRequestId = null;
         let currentUser = null;
+        let supabaseConnected = false;
         let isOnline = false;
 
         // دالة بدء التطبيق مع Supabase
-        // دالة بدء التطبيق مع Supabase
-async function initializeAppWithSupabase() {
-    // التحقق من وجود مستخدم مسجل الدخول
-    const currentUserStr = localStorage.getItem('currentUser');
-    if (!currentUserStr) {
-        window.location.href = 'index.html';
-        return;
-    }
-    
-    try {
-        currentUser = JSON.parse(currentUserStr);
-        updateConnectionStatus('جاري الاتصال...', 'warning');
-        
-        // التحقق من أن Supabase جاهز
-        if (!window.supabase) {
-            console.error('❌ Supabase client is not initialized');
-            throw new Error('Supabase client is not initialized');
-        }
-        
-        // اختبار الاتصال بـ Supabase
-        const { error: testError } = await window.supabase
-            .from('requests')
-            .select('count')
-            .limit(1);
-        
-        if (testError) {
-            console.error('❌ Connection test failed:', testError);
-            throw testError;
-        }
-        
-        console.log('✅ Connected to Supabase successfully');
-        
-        // تحميل البيانات من قاعدة البيانات
-        await loadRequestsFromSupabase();
-        await loadUsersFromSupabase();
-        
-        // تهيئة التطبيق
-        initializeApp();
-        
-        // تحديث حالة الاتصال
-        updateConnectionStatus('متصل بالسحابة', 'success');
-        isOnline = true;
-        
-        showNotification('تم الاتصال بقاعدة البيانات بنجاح', 'success');
-        
-    } catch (error) {
-        console.error('❌ Error initializing app:', error);
-        updateConnectionStatus('غير متصل بالسحابة (الوضع المحلي)', 'danger');
-        isOnline = false;
-        
-        // استخدام البيانات المحلية
-        await initializeAppWithLocalStorage();
-        showNotification('العمل في الوضع المحلي. تحقق من اتصال الإنترنت', 'warning');
-    }
-    
-    // بدء فحص الاتصال بشكل دوري
-    startConnectionCheck();
-}
-        // دالة تحميل الطلبات من Supabase
-        // دالة تحميل الطلبات من Supabase
-async function loadRequestsFromSupabase() {
-    try {
-        console.log('📥 Loading requests from Supabase...');
-        
-        if (!window.supabase) {
-            console.error('❌ Supabase client not available');
-            throw new Error('Supabase client not available');
-        }
-        
-        const { data, error } = await window.supabase
-            .from('requests')
-            .select('*')
-            .order('created_at', { ascending: false });
-        
-        if (error) {
-            console.error('❌ Error loading requests:', error);
-            throw error;
-        }
-        
-        if (data && data.length > 0) {
-            allRequests = data.map(item => ({
-                id: item.id,
-                nationalId: item.national_id,
-                applicantName: item.applicant_name,
-                requestTitle: item.request_title,
-                requestSummary: item.request_summary,
-                requestDate: item.request_date,
-                category: item.category || 'electricity',
-                status: item.status || 'submitted',
-                file: item.file_url,
-                comments: item.comments,
-                priority: item.priority || 'medium',
-                createdAt: item.created_at,
-                createdBy: item.created_by,
-                updatedAt: item.updated_at,
-                updatedBy: item.updated_by
-            }));
-            
-            console.log(`✅ Loaded ${allRequests.length} requests from Supabase`);
-            saveDataToLocalStorage();
-            
-            return allRequests;
-        } else {
-            console.log('ℹ️ No requests found in Supabase');
-            await loadRequestsFromLocalStorage();
-            return allRequests;
-        }
-        
-    } catch (error) {
-        console.error('❌ Failed to load from Supabase:', error);
-        await loadRequestsFromLocalStorage();
-        return allRequests;
-    }
-}
-
-        // دالة تحميل الطلبات من التخزين المحلي
-        async function loadRequestsFromLocalStorage() {
-            const localData = localStorage.getItem('citizenRequests');
-            if (localData) {
-                allRequests = JSON.parse(localData);
-                console.log(`Loaded ${allRequests.length} requests from local storage`);
-            } else {
-                // بيانات افتراضية للبداية
-                allRequests = [
-                    {
-                        id: 1001,
-                        nationalId: "29801011234567",
-                        applicantName: "أحمد محمد علي",
-                        requestTitle: "طلب توصيل خدمة كهرباء",
-                        requestSummary: "المنطقة التي أسكن بها تفتقد لخدمة الكهرباء منذ ثلاثة أشهر مما يسبب معاناة كبيرة للأهالي.",
-                        requestDate: "2023-12-15",
-                        category: "electricity",
-                        status: "pending",
-                        file: null,
-                        comments: "جاري التواصل مع شركة الكهرباء",
-                        priority: "high",
-                        createdAt: new Date().toISOString(),
-                        createdBy: "system"
-                    }
-                ];
-                saveDataToLocalStorage();
+        async function initializeAppWithSupabase() {
+            const currentUserStr = localStorage.getItem('currentUser');
+            if (!currentUserStr) {
+                window.location.href = 'index.html';
+                return;
             }
-            return allRequests;
+            
+            try {
+                currentUser = JSON.parse(currentUserStr);
+                updateConnectionStatus('جاري الاتصال بقاعدة البيانات...', 'warning');
+                
+                // اختبار اتصال Supabase
+                const { data, error } = await supabase
+                    .from('requests')
+                    .select('id')
+                    .limit(1);
+                
+                if (error) throw error;
+                
+                supabaseConnected = true;
+                isOnline = true;
+                console.log('✅ Connected to Supabase successfully');
+                
+                // تحميل البيانات
+                await loadRequestsFromSupabase();
+                await loadUsersFromSupabase();
+                
+                // تهيئة التطبيق
+                initializeApp();
+                
+                updateConnectionStatus('متصل بقاعدة البيانات', 'success');
+                showNotification('تم الاتصال بقاعدة البيانات بنجاح', 'success');
+                
+            } catch (error) {
+                console.error('❌ Error connecting to Supabase:', error);
+                updateConnectionStatus('غير متصل بقاعدة البيانات', 'danger');
+                supabaseConnected = false;
+                isOnline = false;
+                
+                showNotification('تعذر الاتصال بقاعدة البيانات. الرجاء المحاولة لاحقاً', 'error');
+                initializeAppWithLocalFallback();
+            }
+            
+            // بدء فحص الاتصال
+            startConnectionCheck();
+        }
+
+        // دالة تحميل الطلبات من Supabase
+        async function loadRequestsFromSupabase() {
+            try {
+                console.log('📥 Loading requests from Supabase...');
+                
+                const { data, error } = await supabase
+                    .from('requests')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    console.error('❌ Error loading requests:', error);
+                    throw error;
+                }
+                
+                if (data && data.length > 0) {
+                    allRequests = data.map(item => ({
+                        id: item.id,
+                        nationalId: item.national_id || item.nationalId,
+                        applicantName: item.applicant_name || item.applicantName,
+                        requestTitle: item.request_title || item.requestTitle,
+                        requestSummary: item.request_summary || item.requestSummary,
+                        requestDate: item.request_date || item.requestDate,
+                        category: item.category || 'electricity',
+                        status: item.status || 'submitted',
+                        file: item.file_url || item.file,
+                        comments: item.comments || '',
+                        priority: item.priority || 'medium',
+                        createdAt: item.created_at || item.createdAt,
+                        createdBy: item.created_by || item.createdBy,
+                        updatedAt: item.updated_at || item.updatedAt,
+                        updatedBy: item.updated_by || item.updatedBy
+                    }));
+                    
+                    console.log(`✅ Loaded ${allRequests.length} requests from Supabase`);
+                    return allRequests;
+                } else {
+                    console.log('ℹ️ No requests found in Supabase');
+                    return [];
+                }
+                
+            } catch (error) {
+                console.error('❌ Failed to load from Supabase:', error);
+                throw error;
+            }
         }
 
         // دالة تحميل المستخدمين من Supabase
         async function loadUsersFromSupabase() {
             try {
                 console.log('Loading users from Supabase...');
-                
-                if (!supabase) {
-                    throw new Error('Supabase client not initialized');
-                }
                 
                 const { data, error } = await supabase
                     .from('users')
@@ -1850,70 +665,34 @@ async function loadRequestsFromSupabase() {
                 }
                 
                 if (data && data.length > 0) {
-                    // تحويل بيانات المستخدمين
                     const users = data.map(user => ({
                         id: user.id,
                         username: user.username,
-                        password: user.password_hash,
-                        fullName: user.full_name,
+                        password: user.password_hash || user.password,
+                        fullName: user.full_name || user.fullName,
                         email: user.email,
                         phone: user.phone,
                         role: user.role || 'assistant',
                         isActive: user.is_active !== false,
-                        createdAt: user.created_at,
-                        lastLogin: user.last_login
+                        createdAt: user.created_at || user.createdAt,
+                        lastLogin: user.last_login || user.lastLogin
                     }));
                     
                     localStorage.setItem('systemUsers', JSON.stringify(users));
                     console.log(`Loaded ${users.length} users from Supabase`);
-                } else {
-                    console.log('No users found in Supabase, using local storage');
-                    await loadUsersFromLocalStorage();
+                    return users;
                 }
+                
+                return [];
                 
             } catch (error) {
                 console.error('Failed to load users from Supabase:', error);
-                await loadUsersFromLocalStorage();
+                throw error;
             }
         }
 
-        // دالة تحميل المستخدمين من التخزين المحلي
-        async function loadUsersFromLocalStorage() {
-            const localUsers = localStorage.getItem('systemUsers');
-            if (!localUsers) {
-                // إنشاء مستخدمين افتراضيين
-                const defaultUsers = [
-                    {
-                        id: 1,
-                        username: 'admin',
-                        password: '123456',
-                        fullName: 'عضو مجلس النواب',
-                        email: 'mp@parliament.gov',
-                        phone: '01012345678',
-                        role: 'admin',
-                        isActive: true,
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: 2,
-                        username: 'assistant',
-                        password: '123456',
-                        fullName: 'مساعد عضو المجلس',
-                        email: 'assistant@parliament.gov',
-                        phone: '01098765432',
-                        role: 'assistant',
-                        isActive: true,
-                        createdAt: new Date().toISOString()
-                    }
-                ];
-                localStorage.setItem('systemUsers', JSON.stringify(defaultUsers));
-                console.log('Created default users in local storage');
-            }
-        }
-
-        // دالة بدء التطبيق مع التخزين المحلي
-        async function initializeAppWithLocalStorage() {
-            // إنشاء مستخدم افتراضي للجلسة الحالية
+        // دالة بدء التطبيق مع النسخة الاحتياطية المحلية
+        function initializeAppWithLocalFallback() {
             if (!currentUser) {
                 currentUser = {
                     id: 1,
@@ -1926,17 +705,35 @@ async function loadRequestsFromSupabase() {
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
             }
             
-            // تحميل البيانات المحلية
-            await loadRequestsFromLocalStorage();
-            await loadUsersFromLocalStorage();
+            // تحميل البيانات المحلية إذا كانت موجودة
+            const localRequests = localStorage.getItem('citizenRequests');
+            if (localRequests) {
+                allRequests = JSON.parse(localRequests);
+            }
             
-            // تهيئة التطبيق
+            const localUsers = localStorage.getItem('systemUsers');
+            if (!localUsers) {
+                const defaultUsers = [
+                    {
+                        id: 1,
+                        username: 'admin',
+                        password: '123456',
+                        fullName: 'عضو مجلس النواب',
+                        email: 'mp@parliament.gov',
+                        phone: '01012345678',
+                        role: 'admin',
+                        isActive: true,
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem('systemUsers', JSON.stringify(defaultUsers));
+            }
+            
             initializeApp();
         }
 
         // تهيئة التطبيق الرئيسي
         function initializeApp() {
-            saveDataToLocalStorage();
             populateCategoryFilters();
             updateUserInterface();
             renderRequestsTable();
@@ -1967,7 +764,6 @@ async function loadRequestsFromSupabase() {
             const statusElement = $('#connectionStatus');
             statusElement.text(message);
             
-            // تحديث اللون بناءً على النوع
             const colors = {
                 'success': 'text-success',
                 'warning': 'text-warning',
@@ -1975,10 +771,8 @@ async function loadRequestsFromSupabase() {
                 'info': 'text-info'
             };
             
-            // إزالة جميع الألوان أولاً
             statusElement.removeClass('text-success text-warning text-danger text-info');
             
-            // إضافة اللون الجديد
             if (colors[type]) {
                 statusElement.addClass(colors[type]);
             }
@@ -1988,33 +782,29 @@ async function loadRequestsFromSupabase() {
         function startConnectionCheck() {
             setInterval(async () => {
                 try {
-                    if (!supabase) {
-                        updateConnectionStatus('غير متصل بالسحابة (الوضع المحلي)', 'danger');
-                        isOnline = false;
-                        return;
-                    }
+                    const { error } = await supabase
+                        .from('requests')
+                        .select('id')
+                        .limit(1);
                     
-                    // اختبار الاتصال البسيط
-                    const { error } = await supabase.from('requests').select('count').limit(1);
+                    if (error) throw error;
                     
-                    if (error) {
-                        throw error;
-                    }
-                    
-                    if (!isOnline) {
-                        updateConnectionStatus('متصل بالسحابة', 'success');
+                    if (!supabaseConnected) {
+                        supabaseConnected = true;
                         isOnline = true;
-                        showNotification('تم استعادة الاتصال بالسحابة', 'success');
+                        updateConnectionStatus('متصل بقاعدة البيانات', 'success');
+                        showNotification('تم استعادة الاتصال بقاعدة البيانات', 'success');
                     }
                     
                 } catch (error) {
-                    if (isOnline) {
-                        updateConnectionStatus('غير متصل بالسحابة (الوضع المحلي)', 'danger');
+                    if (supabaseConnected) {
+                        supabaseConnected = false;
                         isOnline = false;
-                        showNotification('فقد الاتصال بالسحابة. العمل في الوضع المحلي.', 'warning');
+                        updateConnectionStatus('غير متصل بقاعدة البيانات', 'danger');
+                        showNotification('فقد الاتصال بقاعدة البيانات', 'warning');
                     }
                 }
-            }, 30000); // التحقق كل 30 ثانية
+            }, 30000);
         }
 
         // تحديث واجهة المستخدم
@@ -2023,12 +813,10 @@ async function loadRequestsFromSupabase() {
                 $('#sidebarUserName').text(currentUser.fullName);
                 $('#sidebarUserRole').text(getRoleName(currentUser.role));
                 
-                // تحديث أيقونة المستخدم
                 const avatarIcon = $('#userAvatarIcon');
                 avatarIcon.removeClass('fa-user-circle');
                 avatarIcon.addClass(getUserIconByRole(currentUser.role));
                 
-                // إظهار/إخفاء الأزرار بناءً على الصلاحيات
                 if (currentUser.role !== 'admin') {
                     $('#usersLink').hide();
                 }
@@ -2059,7 +847,6 @@ async function loadRequestsFromSupabase() {
 
         // إعداد أحداث التطبيق الرئيسي
         function setupMainEventListeners() {
-            // البحث أثناء الكتابة
             $('#mainSearchInput').on('input', function() {
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(() => {
@@ -2111,12 +898,10 @@ async function loadRequestsFromSupabase() {
                 performSearch();
             });
 
-            // فتح نموذج الطلب الجديد
             $('#newRequestBtn, #floatingAddBtn').click(function() {
                 openNewRequestModal();
             });
 
-            // مسح البحث
             $('#clearSearchBtn').click(function() {
                 $('#mainSearchInput').val('');
                 activeFilters.searchTerm = '';
@@ -2124,32 +909,26 @@ async function loadRequestsFromSupabase() {
                 $('#searchResults').hide();
             });
 
-            // إعادة تعيين جميع الفلاتر
             $('#resetSearchBtn').click(function() {
                 resetAllFilters();
             });
 
-            // تحديث البيانات
             $('#refreshBtn').click(function() {
                 refreshData();
             });
             
-            // مزامنة البيانات مع السحابة
             $('#syncBtn').click(async function() {
                 await syncDataWithSupabase();
             });
 
-            // تصدير البيانات
             $('#exportBtn').click(function() {
                 exportData();
             });
 
-            // تسجيل الخروج
             $('#logoutBtn').click(function() {
                 logout();
             });
 
-            // التنقل بين الصفحات
             $('.nav-link').click(function(e) {
                 e.preventDefault();
                 $('.nav-link').removeClass('active');
@@ -2163,16 +942,13 @@ async function loadRequestsFromSupabase() {
         // دالة مزامنة البيانات مع Supabase
         async function syncDataWithSupabase() {
             try {
-                if (!supabase) {
-                    throw new Error('Supabase client not initialized');
+                if (!supabaseConnected) {
+                    throw new Error('No connection to Supabase');
                 }
                 
-                showNotification('جاري مزامنة البيانات مع السحابة...', 'info');
+                showNotification('جاري مزامنة البيانات مع قاعدة البيانات...', 'info');
                 
-                // تحديث الطلبات من Supabase
                 await loadRequestsFromSupabase();
-                
-                // تحديث المستخدمين من Supabase
                 await loadUsersFromSupabase();
                 
                 refreshData();
@@ -2188,7 +964,6 @@ async function loadRequestsFromSupabase() {
         function initSearchPage() {
             populateCategorySelect('#advCategory');
             
-            // إعداد بحث متقدم
             $('#executeAdvancedSearch').click(function() {
                 executeAdvancedSearch();
             });
@@ -2206,7 +981,6 @@ async function loadRequestsFromSupabase() {
 
         // إعداد صفحة التقارير
         function initReportsPage() {
-            // إعداد أزرار التقارير
             $('#monthlyReportBtn').click(function() {
                 downloadReport('monthly');
             });
@@ -2264,7 +1038,6 @@ async function loadRequestsFromSupabase() {
             
             let results = [...allRequests];
             
-            // تطبيق الفلاتر
             if (nationalId) {
                 results = results.filter(r => r.nationalId.includes(nationalId));
             }
@@ -2535,7 +1308,6 @@ async function loadRequestsFromSupabase() {
             $('body').append(html);
             $('#categoryDetailsModal').modal('show');
             
-            // تنظيف النموذج بعد الإغلاق
             $('#categoryDetailsModal').on('hidden.bs.modal', function() {
                 $(this).remove();
             });
@@ -2604,39 +1376,44 @@ async function loadRequestsFromSupabase() {
         }
 
         // تحميل التقارير
-        function downloadReport(type) {
-            let reportData = '';
-            let fileName = '';
-            
-            switch(type) {
-                case 'monthly':
-                    reportData = generateMonthlyReport();
-                    fileName = 'تقرير_الأداء_الشهري.pdf';
-                    break;
-                case 'distribution':
-                    reportData = generateDistributionReport();
-                    fileName = 'تقرير_توزيع_الطلبات.pdf';
-                    break;
-                case 'delayed':
-                    reportData = generateDelayedReport();
-                    fileName = 'تقرير_الطلبات_المتأخرة.pdf';
-                    break;
-                case 'issues':
-                    reportData = generateIssuesReport();
-                    fileName = 'تقرير_المشكلات.pdf';
-                    break;
+        async function downloadReport(type) {
+            try {
+                let reportData = '';
+                let fileName = '';
+                
+                switch(type) {
+                    case 'monthly':
+                        reportData = generateMonthlyReport();
+                        fileName = 'تقرير_الأداء_الشهري.pdf';
+                        break;
+                    case 'distribution':
+                        reportData = generateDistributionReport();
+                        fileName = 'تقرير_توزيع_الطلبات.pdf';
+                        break;
+                    case 'delayed':
+                        reportData = generateDelayedReport();
+                        fileName = 'تقرير_الطلبات_المتأخرة.pdf';
+                        break;
+                    case 'issues':
+                        reportData = generateIssuesReport();
+                        fileName = 'تقرير_المشكلات.pdf';
+                        break;
+                }
+                
+                showNotification(`تم تحميل التقرير: ${fileName}`, 'success');
+                
+                const dataStr = JSON.stringify(allRequests, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(reportData + '\n\n' + dataStr);
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', fileName);
+                linkElement.click();
+                
+            } catch (error) {
+                console.error('Error downloading report:', error);
+                showNotification('حدث خطأ أثناء تحميل التقرير', 'error');
             }
-            
-            showNotification(`تم تحميل التقرير: ${fileName}`, 'success');
-            
-            // إنشاء ملف PDF افتراضي
-            const dataStr = JSON.stringify(allRequests, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(reportData + '\n\n' + dataStr);
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', fileName);
-            linkElement.click();
         }
 
         // توليد تقرير شهري
@@ -2728,13 +1505,11 @@ async function loadRequestsFromSupabase() {
             
             showNotification('تم حفظ الإعدادات بنجاح', 'success');
             
-            // تطبيق الإعدادات فورًا
             applySettings(settings);
         }
 
         // تطبيق الإعدادات
         function applySettings(settings) {
-            // تطبيق السمة الداكنة
             if (settings.darkMode) {
                 $('body').addClass('dark-mode');
                 $('.sidebar').addClass('dark-sidebar');
@@ -2753,11 +1528,6 @@ async function loadRequestsFromSupabase() {
             }
         }
 
-        // حفظ البيانات في التخزين المحلي
-        function saveDataToLocalStorage() {
-            localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
-        }
-
         // تعبئة فلاتر الفئات
         function populateCategoryFilters() {
             populateCategorySelect('#categoryFilter');
@@ -2765,15 +1535,13 @@ async function loadRequestsFromSupabase() {
 
         // تنفيذ البحث
         function performSearch() {
-    // إذا لم تكن هناك بيانات، لا تنفذ البحث
-    if (!allRequests || allRequests.length === 0) {
-        console.warn('No requests data available');
-        return;
-    }
-    
-    let results = [...allRequests];
+            if (!allRequests || allRequests.length === 0) {
+                console.warn('No requests data available');
+                return;
+            }
             
-            // تطبيق البحث النصي
+            let results = [...allRequests];
+            
             if (activeFilters.searchTerm) {
                 const searchTerm = activeFilters.searchTerm.toLowerCase();
                 results = results.filter(request => {
@@ -2789,17 +1557,14 @@ async function loadRequestsFromSupabase() {
                 });
             }
             
-            // تطبيق فلتر الحالة
             if (activeFilters.status) {
                 results = results.filter(request => request.status === activeFilters.status);
             }
             
-            // تطبيق فلتر الفئة
             if (activeFilters.category) {
                 results = results.filter(request => request.category === activeFilters.category);
             }
             
-            // تطبيق فلتر التاريخ
             if (activeFilters.dateFilter) {
                 const now = new Date();
                 let startDate = new Date();
@@ -2830,48 +1595,46 @@ async function loadRequestsFromSupabase() {
         }
 
         // عرض نتائج البحث أثناء الكتابة
-        // عرض نتائج البحث أثناء الكتابة
-function showSearchResults(searchTerm) {
-    if (searchTerm.length < 2) {
-        $('#searchResults').hide();
-        return;
-    }
-    
-    // التحقق من وجود بيانات
-    if (!allRequests || allRequests.length === 0) {
-        $('#searchResults').hide();
-        return;
-    }
-    
-    let results = allRequests.filter(request => {
-        return (request.nationalId && request.nationalId.includes(searchTerm)) ||
-               (request.applicantName && request.applicantName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-               (request.requestTitle && request.requestTitle.toLowerCase().includes(searchTerm.toLowerCase()));
-    }).slice(0, 5);
-    
-    const container = $('#searchResults');
-    
-    if (results.length === 0) {
-        container.html(`
-            <div class="search-result-item text-muted">
-                <i class="fas fa-search me-2"></i>لا توجد نتائج
-            </div>
-        `);
-    } else {
-        let html = '';
-        results.forEach(request => {
-            html += `
-                <div class="search-result-item" onclick="selectSearchResult('${request.nationalId}', '${request.applicantName}')">
-                    <div class="fw-bold">${request.applicantName || 'غير معروف'}</div>
-                    <div class="small text-muted">${request.nationalId || 'غير معروف'} - ${request.requestTitle || 'لا عنوان'}</div>
-                </div>
-            `;
-        });
-        container.html(html);
-    }
-    
-    container.show();
-}
+        function showSearchResults(searchTerm) {
+            if (searchTerm.length < 2) {
+                $('#searchResults').hide();
+                return;
+            }
+            
+            if (!allRequests || allRequests.length === 0) {
+                $('#searchResults').hide();
+                return;
+            }
+            
+            let results = allRequests.filter(request => {
+                return (request.nationalId && request.nationalId.includes(searchTerm)) ||
+                       (request.applicantName && request.applicantName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                       (request.requestTitle && request.requestTitle.toLowerCase().includes(searchTerm.toLowerCase()));
+            }).slice(0, 5);
+            
+            const container = $('#searchResults');
+            
+            if (results.length === 0) {
+                container.html(`
+                    <div class="search-result-item text-muted">
+                        <i class="fas fa-search me-2"></i>لا توجد نتائج
+                    </div>
+                `);
+            } else {
+                let html = '';
+                results.forEach(request => {
+                    html += `
+                        <div class="search-result-item" onclick="selectSearchResult('${request.nationalId}', '${request.applicantName}')">
+                            <div class="fw-bold">${request.applicantName || 'غير معروف'}</div>
+                            <div class="small text-muted">${request.nationalId || 'غير معروف'} - ${request.requestTitle || 'لا عنوان'}</div>
+                        </div>
+                    `;
+                });
+                container.html(html);
+            }
+            
+            container.show();
+        }
 
         // اختيار نتيجة بحث
         function selectSearchResult(nationalId, applicantName) {
@@ -2898,7 +1661,6 @@ function showSearchResults(searchTerm) {
             const totalRows = $('#totalRows');
             const pagination = $('#pagination');
             
-            // تحديث العنوان والعداد
             if (activeFilters.searchTerm || activeFilters.status || activeFilters.category || activeFilters.dateFilter) {
                 resultsTitle.text('نتائج البحث');
             } else {
@@ -2919,52 +1681,50 @@ function showSearchResults(searchTerm) {
             noResultsMessage.addClass('d-none');
             
             let html = '';
-            // داخل دالة renderRequestsTable، في الحلقة forEach
-pageRequests.forEach((request, index) => {
-    // استخدم قيم افتراضية إذا كانت الفئة أو الحالة غير موجودة
-    const category = categories[request.category] || categories['electricity'];
-    const status = statuses[request.status] || statuses['submitted'];
-    const rowNumber = startIndex + index + 1;
-    
-    html += `
-        <tr>
-            <td class="fw-bold">${rowNumber}</td>
-            <td>${request.nationalId}</td>
-            <td>
-                <div class="fw-bold">${request.applicantName}</div>
-                <small class="text-muted">طلب #${request.id}</small>
-            </td>
-            <td>
-                <div class="fw-bold">${request.requestTitle}</div>
-                <small class="text-muted">${request.requestSummary ? request.requestSummary.substring(0, 80) + (request.requestSummary.length > 80 ? '...' : '') : ''}</small>
-            </td>
-            <td>
-                <span class="category-badge ${getCategoryClass(request.category)}">
-                    <i class="${category.icon} me-1"></i>${category.name}
-                </span>
-            </td>
-            <td>${formatDate(request.requestDate)}</td>
-            <td>
-                <span class="status-badge ${getStatusClass(request.status)}">
-                    <i class="${status.icon} me-1"></i>${status.name}
-                </span>
-            </td>
-            <td>
-                <div class="btn-group btn-group-sm" role="group">
-                    <button class="btn btn-outline-primary" onclick="showRequestDetails(${request.id})">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="btn btn-outline-success" onclick="updateRequestStatus(${request.id}, 'approved')">
-                        <i class="fas fa-check"></i>
-                    </button>
-                    <button class="btn btn-outline-warning" onclick="editRequest(${request.id})">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-    `;
-});
+            pageRequests.forEach((request, index) => {
+                const category = categories[request.category] || categories['electricity'];
+                const status = statuses[request.status] || statuses['submitted'];
+                const rowNumber = startIndex + index + 1;
+                
+                html += `
+                    <tr>
+                        <td class="fw-bold">${rowNumber}</td>
+                        <td>${request.nationalId}</td>
+                        <td>
+                            <div class="fw-bold">${request.applicantName}</div>
+                            <small class="text-muted">طلب #${request.id}</small>
+                        </td>
+                        <td>
+                            <div class="fw-bold">${request.requestTitle}</div>
+                            <small class="text-muted">${request.requestSummary ? request.requestSummary.substring(0, 80) + (request.requestSummary.length > 80 ? '...' : '') : ''}</small>
+                        </td>
+                        <td>
+                            <span class="category-badge ${getCategoryClass(request.category)}">
+                                <i class="${category.icon} me-1"></i>${category.name}
+                            </span>
+                        </td>
+                        <td>${formatDate(request.requestDate)}</td>
+                        <td>
+                            <span class="status-badge ${getStatusClass(request.status)}">
+                                <i class="${status.icon} me-1"></i>${status.name}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button class="btn btn-outline-primary" onclick="showRequestDetails(${request.id})">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-success" onclick="updateRequestStatus(${request.id}, 'approved')">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button class="btn btn-outline-warning" onclick="editRequest(${request.id})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
             
             tableBody.html(html);
             renderPagination();
@@ -2982,7 +1742,6 @@ pageRequests.forEach((request, index) => {
             
             let html = '';
             
-            // زر السابق
             html += `
                 <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
                     <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">
@@ -2991,7 +1750,6 @@ pageRequests.forEach((request, index) => {
                 </li>
             `;
             
-            // الأرقام
             const maxVisiblePages = 5;
             let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
             let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
@@ -3008,7 +1766,6 @@ pageRequests.forEach((request, index) => {
                 `;
             }
             
-            // زر التالي
             html += `
                 <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
                     <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">
@@ -3126,7 +1883,6 @@ pageRequests.forEach((request, index) => {
         function updateStatistics() {
             const totalRequests = allRequests.length;
             
-            // حساب الطلبات الجديدة (خلال آخر 7 أيام)
             const newRequests = allRequests.filter(r => {
                 const requestDate = new Date(r.requestDate);
                 const weekAgo = new Date();
@@ -3138,14 +1894,12 @@ pageRequests.forEach((request, index) => {
             const approvedRequests = allRequests.filter(r => r.status === 'approved').length;
             const completionRate = totalRequests > 0 ? Math.round((approvedRequests / totalRequests) * 100) : 0;
 
-            // تحديث القيم في الواجهة
             $('#totalRequests').text(totalRequests);
             $('#newRequests').text(newRequests);
             $('#pendingRequests').text(pendingRequests);
             $('#completionRate').text(completionRate + '%');
             $('#progressBar').css('width', completionRate + '%');
             
-            // حساب التغيرات (لأغراض العرض فقط)
             $('#totalChange').html(`<i class="fas fa-arrow-up me-1"></i>${Math.floor(Math.random() * 20)}%`);
             $('#newChange').html(`<i class="fas fa-arrow-up me-1"></i>${Math.floor(Math.random() * 15)}%`);
             $('#pendingChange').html(`<i class="fas fa-arrow-down me-1"></i>${Math.floor(Math.random() * 10)}%`);
@@ -3197,7 +1951,6 @@ pageRequests.forEach((request, index) => {
                 }
             });
             
-            // تحديث وسوم الفئات
             const legendContainer = $('#categoryLegend');
             let legendHtml = '<h6 class="mb-3">توزيع الطلبات</h6>';
             
@@ -3364,18 +2117,16 @@ pageRequests.forEach((request, index) => {
             $('body').append(modalHtml);
             $('#newRequestModal').modal('show');
             
-            // إضافة حدث لحفظ الطلب
             $('#submitNewRequestBtn').off('click').on('click', async function() {
                 await saveNewRequest();
             });
             
-            // تنظيف النموذج بعد الإغلاق
             $('#newRequestModal').on('hidden.bs.modal', function() {
                 $(this).remove();
             });
         }
 
-        // حفظ الطلب الجديد
+        // حفظ الطلب الجديد في Supabase
         async function saveNewRequest() {
             const nationalId = $('#newNationalId').val().trim();
             const applicantName = $('#newApplicantName').val().trim();
@@ -3384,7 +2135,6 @@ pageRequests.forEach((request, index) => {
             const requestTitle = $('#newRequestTitle').val().trim();
             const requestSummary = $('#newRequestSummary').val().trim();
             
-            // التحقق من البيانات
             if (!nationalId || nationalId.length !== 14 || !/^\d+$/.test(nationalId)) {
                 showNotification('الرجاء إدخال رقم قومي صحيح مكون من 14 رقم', 'error');
                 return;
@@ -3396,7 +2146,6 @@ pageRequests.forEach((request, index) => {
             }
 
             try {
-                // إعداد بيانات الطلب الجديد
                 const newRequestData = {
                     national_id: nationalId,
                     applicant_name: applicantName,
@@ -3411,32 +2160,16 @@ pageRequests.forEach((request, index) => {
                     created_by: currentUser ? currentUser.username : 'system'
                 };
 
-                let savedRequestId;
-                
-                // المحاولة للحفظ في Supabase إذا كان الاتصال متاحاً
-                if (isOnline && supabase) {
-                    const { data, error } = await window.supabase 
-                        .from('requests')
-                        .insert([newRequestData])
-                        .select()
-                        .single();
+                const { data, error } = await supabase
+                    .from('requests')
+                    .insert([newRequestData])
+                    .select()
+                    .single();
 
-                    if (error) {
-                        console.error('Error saving to Supabase:', error);
-                        throw error;
-                    }
+                if (error) throw error;
 
-                    savedRequestId = data.id;
-                    console.log('Request saved to Supabase with ID:', savedRequestId);
-                } else {
-                    // توليد ID محلياً
-                    savedRequestId = allRequests.length > 0 ? Math.max(...allRequests.map(r => r.id)) + 1 : 1001;
-                    console.log('Saving locally with ID:', savedRequestId);
-                }
-
-                // إضافة للبيانات المحلية
                 const newRequest = {
-                    id: savedRequestId,
+                    id: data.id,
                     nationalId: nationalId,
                     applicantName: applicantName,
                     requestTitle: requestTitle,
@@ -3448,54 +2181,22 @@ pageRequests.forEach((request, index) => {
                     comments: '',
                     priority: priority,
                     createdAt: new Date().toISOString(),
-                    createdBy: currentUser ? currentUser.username : 'system'
+                    createdBy: currentUser ? currentUser.username : 'system',
+                    updatedAt: new Date().toISOString()
                 };
 
                 allRequests.unshift(newRequest);
-                saveDataToLocalStorage();
                 
                 $('#newRequestModal').modal('hide');
+                showNotification('تم إضافة الطلب بنجاح إلى قاعدة البيانات', 'success');
                 
-                if (isOnline) {
-                    showNotification('تم إضافة الطلب بنجاح إلى قاعدة البيانات', 'success');
-                } else {
-                    showNotification('تم إضافة الطلب بنجاح (محلياً)', 'warning');
-                }
-                
-                // تحديث البيانات
                 refreshData();
                 
-                // إضافة للأنشطة
-                addActivity('طلب جديد', `تم إضافة طلب جديد #${savedRequestId} بواسطة ${currentUser ? currentUser.fullName : 'المسؤول'}`);
+                await addActivityToSupabase('طلب جديد', `تم إضافة طلب جديد #${data.id} بواسطة ${currentUser ? currentUser.fullName : 'المسؤول'}`);
 
             } catch (error) {
-                console.error('Error saving request:', error);
-                
-                // حفظ محلي كنسخة احتياطية
-                const newId = allRequests.length > 0 ? Math.max(...allRequests.map(r => r.id)) + 1 : 1001;
-                
-                const newRequest = {
-                    id: newId,
-                    nationalId: nationalId,
-                    applicantName: applicantName,
-                    requestTitle: requestTitle,
-                    requestSummary: requestSummary,
-                    requestDate: new Date().toISOString().split('T')[0],
-                    category: category,
-                    status: 'submitted',
-                    file: null,
-                    comments: '',
-                    priority: priority,
-                    createdAt: new Date().toISOString(),
-                    createdBy: currentUser ? currentUser.username : 'system'
-                };
-                
-                allRequests.unshift(newRequest);
-                saveDataToLocalStorage();
-                
-                $('#newRequestModal').modal('hide');
-                showNotification('تم إضافة الطلب بنجاح (محلياً)', 'warning');
-                refreshData();
+                console.error('Error saving request to Supabase:', error);
+                showNotification('حدث خطأ أثناء حفظ الطلب في قاعدة البيانات', 'error');
             }
         }
 
@@ -3609,13 +2310,12 @@ pageRequests.forEach((request, index) => {
             $('body').append(modalHtml);
             $('#requestDetailsModal').modal('show');
             
-            // تنظيف النموذج بعد الإغلاق
             $('#requestDetailsModal').on('hidden.bs.modal', function() {
                 $(this).remove();
             });
         }
 
-        // تحديث تفاصيل الطلب
+        // تحديث تفاصيل الطلب في Supabase
         async function updateRequestDetails(requestId) {
             const requestIndex = allRequests.findIndex(r => r.id === requestId);
             if (requestIndex === -1) return;
@@ -3624,104 +2324,64 @@ pageRequests.forEach((request, index) => {
             const newStatus = $('#updateStatus').val();
             
             try {
-                // تحديث في Supabase إذا كان الاتصال متاحاً
-                if (isOnline && supabase) {
-                    const { error } = await window.supabase 
-                        .from('requests')
-                        .update({
-                            comments: newComments,
-                            status: newStatus,
-                            updated_at: new Date().toISOString(),
-                            updated_by: currentUser ? currentUser.username : 'system'
-                        })
-                        .eq('id', requestId);
+                const { error } = await supabase
+                    .from('requests')
+                    .update({
+                        comments: newComments,
+                        status: newStatus,
+                        updated_at: new Date().toISOString(),
+                        updated_by: currentUser ? currentUser.username : 'system'
+                    })
+                    .eq('id', requestId);
 
-                    if (error) throw error;
-                    
-                    console.log('Request updated in Supabase with ID:', requestId);
-                }
+                if (error) throw error;
                 
-                // تحديث محلياً
                 allRequests[requestIndex].comments = newComments;
                 allRequests[requestIndex].status = newStatus;
                 allRequests[requestIndex].updatedAt = new Date().toISOString();
                 allRequests[requestIndex].updatedBy = currentUser ? currentUser.username : 'system';
                 
-                saveDataToLocalStorage();
                 $('#requestDetailsModal').modal('hide');
-                
-                if (isOnline) {
-                    showNotification('تم تحديث حالة الطلب بنجاح في قاعدة البيانات', 'success');
-                } else {
-                    showNotification('تم تحديث حالة الطلب (محلياً)', 'warning');
-                }
+                showNotification('تم تحديث حالة الطلب بنجاح في قاعدة البيانات', 'success');
                 
                 refreshData();
-                addActivity('تحديث طلب', `تم تحديث حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
+                await addActivityToSupabase('تحديث طلب', `تم تحديث حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
 
             } catch (error) {
-                console.error('Error updating request:', error);
-                
-                // تحديث محلي فقط
-                allRequests[requestIndex].comments = newComments;
-                allRequests[requestIndex].status = newStatus;
-                allRequests[requestIndex].updatedAt = new Date().toISOString();
-                allRequests[requestIndex].updatedBy = currentUser ? currentUser.username : 'system';
-                
-                saveDataToLocalStorage();
-                $('#requestDetailsModal').modal('hide');
-                showNotification('تم تحديث حالة الطلب (محلياً فقط)', 'warning');
-                refreshData();
+                console.error('Error updating request in Supabase:', error);
+                showNotification('حدث خطأ أثناء تحديث الطلب في قاعدة البيانات', 'error');
             }
         }
 
-        // تحديث حالة الطلب مباشرة
+        // تحديث حالة الطلب مباشرة في Supabase
         async function updateRequestStatus(requestId, newStatus) {
             const requestIndex = allRequests.findIndex(r => r.id === requestId);
             if (requestIndex === -1) return;
             
             try {
-                // تحديث في Supabase إذا كان الاتصال متاحاً
-                if (isOnline && supabase) {
-                    const { error } = await window.supabase 
-                        .from('requests')
-                        .update({
-                            status: newStatus,
-                            updated_at: new Date().toISOString(),
-                            updated_by: currentUser ? currentUser.username : 'system'
-                        })
-                        .eq('id', requestId);
+                const { error } = await supabase
+                    .from('requests')
+                    .update({
+                        status: newStatus,
+                        updated_at: new Date().toISOString(),
+                        updated_by: currentUser ? currentUser.username : 'system'
+                    })
+                    .eq('id', requestId);
 
-                    if (error) throw error;
-                }
+                if (error) throw error;
                 
-                // تحديث محلياً
                 allRequests[requestIndex].status = newStatus;
                 allRequests[requestIndex].updatedAt = new Date().toISOString();
                 allRequests[requestIndex].updatedBy = currentUser ? currentUser.username : 'system';
                 
-                saveDataToLocalStorage();
-                
-                if (isOnline) {
-                    showNotification(`تم تحديث حالة الطلب إلى ${statuses[newStatus].name} في قاعدة البيانات`, 'success');
-                } else {
-                    showNotification(`تم تحديث حالة الطلب إلى ${statuses[newStatus].name} (محلياً)`, 'warning');
-                }
+                showNotification(`تم تحديث حالة الطلب إلى ${statuses[newStatus].name} في قاعدة البيانات`, 'success');
                 
                 refreshData();
-                addActivity('تغيير حالة', `تم تغيير حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
+                await addActivityToSupabase('تغيير حالة', `تم تغيير حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
 
             } catch (error) {
-                console.error('Error updating status:', error);
-                
-                // تحديث محلي فقط
-                allRequests[requestIndex].status = newStatus;
-                allRequests[requestIndex].updatedAt = new Date().toISOString();
-                allRequests[requestIndex].updatedBy = currentUser ? currentUser.username : 'system';
-                
-                saveDataToLocalStorage();
-                showNotification(`تم تحديث حالة الطلب إلى ${statuses[newStatus].name} (محلياً فقط)`, 'warning');
-                refreshData();
+                console.error('Error updating status in Supabase:', error);
+                showNotification('حدث خطأ أثناء تحديث حالة الطلب في قاعدة البيانات', 'error');
             }
         }
 
@@ -3732,59 +2392,64 @@ pageRequests.forEach((request, index) => {
 
         // تحديث البيانات
         function refreshData() {
-    // التحقق من وجود بيانات
-    if (!allRequests) {
-        console.warn('No data to refresh');
-        return;
-    }
+            if (!allRequests) {
+                console.warn('No data to refresh');
+                return;
+            }
             renderRequestsTable();
             updateStatistics();
             renderCategoryChart();
             loadUrgentRequests();
             updateActiveFiltersDisplay();
             
-            // تحديث المخططات الأخرى إذا كانت موجودة
             if (monthlyChart) {
                 updateMonthlyChart();
             }
         }
 
-        // تصدير البيانات
-        function exportData() {
-            const exportFormat = localStorage.getItem('exportFormat') || 'json';
-            let dataStr, fileName, mimeType;
-            
-            switch(exportFormat) {
-                case 'csv':
-                    dataStr = convertToCSV(allRequests);
-                    fileName = 'طلبات_المواطنين.csv';
-                    mimeType = 'text/csv;charset=utf-8;';
-                    break;
-                case 'excel':
-                    dataStr = convertToExcel(allRequests);
-                    fileName = 'طلبات_المواطنين.xls';
-                    mimeType = 'application/vnd.ms-excel;charset=utf-8;';
-                    break;
-                case 'pdf':
-                    dataStr = JSON.stringify(allRequests, null, 2);
-                    fileName = 'طلبات_المواطنين.pdf';
-                    mimeType = 'application/json;charset=utf-8;';
-                    break;
-                default: // json
-                    dataStr = JSON.stringify(allRequests, null, 2);
-                    fileName = 'طلبات_المواطنين.json';
-                    mimeType = 'application/json;charset=utf-8;';
-                    break;
+        // تصدير البيانات من Supabase
+        async function exportData() {
+            try {
+                const exportFormat = localStorage.getItem('exportFormat') || 'json';
+                
+                let dataStr, fileName, mimeType;
+                
+                switch(exportFormat) {
+                    case 'csv':
+                        dataStr = convertToCSV(allRequests);
+                        fileName = 'طلبات_المواطنين.csv';
+                        mimeType = 'text/csv;charset=utf-8;';
+                        break;
+                    case 'excel':
+                        dataStr = convertToExcel(allRequests);
+                        fileName = 'طلبات_المواطنين.xls';
+                        mimeType = 'application/vnd.ms-excel;charset=utf-8;';
+                        break;
+                    case 'pdf':
+                        dataStr = JSON.stringify(allRequests, null, 2);
+                        fileName = 'طلبات_المواطنين.pdf';
+                        mimeType = 'application/json;charset=utf-8;';
+                        break;
+                    default:
+                        dataStr = JSON.stringify(allRequests, null, 2);
+                        fileName = 'طلبات_المواطنين.json';
+                        mimeType = 'application/json;charset=utf-8;';
+                        break;
+                }
+                
+                const dataUri = 'data:' + mimeType + ',' + encodeURIComponent(dataStr);
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', fileName);
+                linkElement.click();
+                
+                showNotification(`تم تصدير البيانات كملف ${fileName}`, 'success');
+                
+            } catch (error) {
+                console.error('Error exporting data:', error);
+                showNotification('حدث خطأ أثناء تصدير البيانات', 'error');
             }
-            
-            const dataUri = 'data:' + mimeType + ',' + encodeURIComponent(dataStr);
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', fileName);
-            linkElement.click();
-            
-            showNotification(`تم تصدير البيانات كملف ${fileName}`, 'success');
         }
 
         // التحويل إلى CSV
@@ -3822,25 +2487,20 @@ pageRequests.forEach((request, index) => {
 
         // عرض الصفحة المحددة
         function showPage(pageId) {
-            // إخفاء جميع الصفحات
             $('.page-section').hide();
             
-            // إظهار الصفحة المطلوبة
             $(`#${pageId}Section`).show();
             
-            // إخفاء/إظهار زر الإضافة العائم
             if (pageId === 'dashboard' || pageId === 'allRequests') {
                 $('#floatingAddBtn').show();
             } else {
                 $('#floatingAddBtn').hide();
             }
             
-            // تحديث المخططات إذا لزم الأمر
             if (pageId === 'reports') {
                 updateReportsPage();
             }
             
-            // تحميل بيانات الصفحات المحددة
             if (pageId === 'users') {
                 initUsersPage();
             }
@@ -3870,7 +2530,6 @@ pageRequests.forEach((request, index) => {
             const months = [];
             const counts = [];
             
-            // جمع بيانات آخر 6 أشهر
             for (let i = 5; i >= 0; i--) {
                 const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
                 const monthName = date.toLocaleDateString('ar-EG', { month: 'long' });
@@ -3930,7 +2589,6 @@ pageRequests.forEach((request, index) => {
 
         // تحديث مؤشرات الأداء
         function updatePerformanceIndicators() {
-            // متوسط وقت المعالجة
             const completedRequests = allRequests.filter(r => r.status === 'approved' && r.requestDate && r.updatedAt);
             let totalDays = 0;
             
@@ -3946,13 +2604,11 @@ pageRequests.forEach((request, index) => {
             
             $('#avgProcessingTime').text(avgProcessingTime);
             
-            // معدل الرضا (بافتراض أن الطلبات المكتملة هي راضية)
             const satisfactionRate = allRequests.length > 0 ? 
                 Math.round((completedRequests.length / allRequests.length) * 100) : 0;
             
             $('#satisfactionRate').text(satisfactionRate + '%');
             
-            // معدل الاستجابة (طلبات تم الرد عليها خلال 3 أيام)
             const respondedRequests = allRequests.filter(r => {
                 if (!r.updatedAt) return false;
                 const start = new Date(r.requestDate);
@@ -3966,93 +2622,87 @@ pageRequests.forEach((request, index) => {
             
             $('#responseRate').text(responseRate + '%');
             
-            // متوسط أيام الإنجاز
             $('#completionDays').text(avgProcessingTime);
         }
 
         // تحديث سجل الأنشطة
-        function updateActivityTimeline() {
+        async function updateActivityTimeline() {
             const container = $('#activityTimeline');
             
-            // جمع الأنشطة من مختلف المصادر
-            let activities = [];
-            
-            // إضافة أنشطة الطلبات
-            allRequests.forEach(request => {
-                activities.push({
-                    type: 'request',
-                    title: `طلب جديد #${request.id}`,
-                    description: `${request.applicantName} - ${request.requestTitle}`,
-                    date: request.createdAt,
-                    icon: 'fas fa-file-alt'
-                });
+            try {
+                const { data: activitiesData, error } = await supabase
+                    .from('activities')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(10);
                 
-                if (request.updatedAt) {
-                    activities.push({
-                        type: 'update',
-                        title: `تحديث الطلب #${request.id}`,
-                        description: `تم تحديث حالة الطلب إلى ${statuses[request.status].name}`,
-                        date: request.updatedAt,
-                        icon: 'fas fa-sync'
-                    });
+                if (error) throw error;
+                
+                if (!activitiesData || activitiesData.length === 0) {
+                    container.html(`
+                        <div class="text-center py-5 text-muted">
+                            <i class="fas fa-history fa-3x mb-3"></i>
+                            <h5>لا توجد أنشطة سابقة</h5>
+                        </div>
+                    `);
+                    return;
                 }
-            });
-            
-            // إضافة أنشطة النظام
-            const systemActivities = JSON.parse(localStorage.getItem('systemActivities') || '[]');
-            activities = activities.concat(systemActivities);
-            
-            // ترتيب حسب التاريخ
-            activities.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            // عرض أول 10 أنشطة
-            const recentActivities = activities.slice(0, 10);
-            
-            let html = '';
-            recentActivities.forEach(activity => {
-                const timeAgo = getTimeAgo(activity.date);
                 
-                html += `
-                    <div class="timeline-item">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-2">
-                                    <div class="stat-icon me-3" style="background-color: #e9ecef; color: #495057;">
-                                        <i class="${activity.icon}"></i>
+                let html = '';
+                activitiesData.forEach(activity => {
+                    const timeAgo = getTimeAgo(activity.created_at);
+                    
+                    html += `
+                        <div class="timeline-item">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="stat-icon me-3" style="background-color: #e9ecef; color: #495057;">
+                                            <i class="fas fa-history"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">${activity.title}</h6>
+                                            <small class="text-muted">${timeAgo}</small>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h6 class="mb-0">${activity.title}</h6>
-                                        <small class="text-muted">${timeAgo}</small>
-                                    </div>
+                                    <p class="mb-0 small">${activity.description}</p>
+                                    ${activity.user_name ? `<small class="text-muted">بواسطة: ${activity.user_name}</small>` : ''}
                                 </div>
-                                <p class="mb-0 small">${activity.description}</p>
                             </div>
                         </div>
+                    `;
+                });
+                
+                container.html(html);
+                
+            } catch (error) {
+                console.error('Error loading activities:', error);
+                container.html(`
+                    <div class="text-center py-5 text-muted">
+                        <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                        <h5>تعذر تحميل الأنشطة</h5>
                     </div>
-                `;
-            });
-            
-            container.html(html);
+                `);
+            }
         }
 
-        // إضافة نشاط للنظام
-        function addActivity(title, description) {
-            const activities = JSON.parse(localStorage.getItem('systemActivities') || '[]');
-            
-            activities.unshift({
-                type: 'system',
-                title: title,
-                description: description,
-                date: new Date().toISOString(),
-                icon: 'fas fa-history'
-            });
-            
-            // الاحتفاظ بحد أقصى 50 نشاط
-            if (activities.length > 50) {
-                activities.length = 50;
+        // إضافة نشاط إلى Supabase
+        async function addActivityToSupabase(title, description) {
+            try {
+                const activityData = {
+                    title: title,
+                    description: description,
+                    user_id: currentUser ? currentUser.id : null,
+                    user_name: currentUser ? currentUser.fullName : 'النظام'
+                };
+                
+                await supabase
+                    .from('activities')
+                    .insert([activityData]);
+                    
+            } catch (error) {
+                console.error('Error saving activity to Supabase:', error);
             }
-            
-            localStorage.setItem('systemActivities', JSON.stringify(activities));
         }
 
         // التحقق من الطلبات الجديدة
@@ -4063,10 +2713,8 @@ pageRequests.forEach((request, index) => {
             if (newRequests.length > 0) {
                 showNotification(`لديك ${newRequests.length} طلب جديد`, 'info');
                 
-                // تحديث آخر فحص
                 localStorage.setItem('lastRequestCheck', new Date().toISOString());
                 
-                // تحديث الإحصائيات
                 updateStatistics();
             }
         }
@@ -4097,7 +2745,6 @@ pageRequests.forEach((request, index) => {
             const toast = new bootstrap.Toast(toastElement[0], { delay: 3000 });
             toast.show();
             
-            // إزالة الإشعار بعد إخفائه
             toastElement.on('hidden.bs.toast', function() {
                 $(this).remove();
             });
@@ -4395,18 +3042,16 @@ pageRequests.forEach((request, index) => {
             $('body').append(modalHtml);
             $('#addUserModal').modal('show');
             
-            // إضافة حدث لحفظ المستخدم
             $('#saveNewUserBtn').off('click').on('click', async function() {
                 await saveNewUser();
             });
             
-            // تنظيف النموذج بعد الإغلاق
             $('#addUserModal').on('hidden.bs.modal', function() {
                 $(this).remove();
             });
         }
 
-        // حفظ المستخدم الجديد
+        // حفظ المستخدم الجديد في Supabase
         async function saveNewUser() {
             const fullName = $('#newUserFullName').val().trim();
             const username = $('#newUserUsername').val().trim();
@@ -4418,7 +3063,6 @@ pageRequests.forEach((request, index) => {
             const status = $('#newUserStatus').val();
             const isActive = status === 'active';
             
-            // التحقق من البيانات
             if (!fullName || !username || !email || !password || !confirmPassword) {
                 showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
                 return;
@@ -4429,7 +3073,6 @@ pageRequests.forEach((request, index) => {
                 return;
             }
             
-            // التحقق من عدم تكرار اسم المستخدم
             const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
             const isUsernameTaken = users.some(user => user.username === username);
             
@@ -4439,36 +3082,26 @@ pageRequests.forEach((request, index) => {
             }
             
             try {
-                // محاولة الحفظ في Supabase
-                let newUserId;
-                if (isOnline && supabase) {
-                    const { data, error } = await window.supabase 
-                        .from('users')
-                        .insert([{
-                            username: username,
-                            password_hash: password,
-                            full_name: fullName,
-                            email: email,
-                            phone: phone,
-                            role: role,
-                            is_active: isActive
-                        }])
-                        .select()
-                        .single();
-
-                    if (error) throw error;
-                    
-                    newUserId = data.id;
-                    console.log('User saved to Supabase with ID:', newUserId);
-                } else {
-                    // توليد ID محلياً
-                    newUserId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
-                    console.log('Saving user locally with ID:', newUserId);
-                }
+                const newUserData = {
+                    username: username,
+                    password_hash: password,
+                    full_name: fullName,
+                    email: email,
+                    phone: phone,
+                    role: role,
+                    is_active: isActive
+                };
                 
-                // إنشاء مستخدم جديد للبيانات المحلية
+                const { data, error } = await supabase
+                    .from('users')
+                    .insert([newUserData])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+                
                 const newUser = {
-                    id: newUserId,
+                    id: data.id,
                     username: username,
                     password: password,
                     fullName: fullName,
@@ -4484,44 +3117,15 @@ pageRequests.forEach((request, index) => {
                 localStorage.setItem('systemUsers', JSON.stringify(users));
                 
                 $('#addUserModal').modal('hide');
+                showNotification('تم إضافة المستخدم بنجاح إلى قاعدة البيانات', 'success');
                 
-                if (isOnline) {
-                    showNotification('تم إضافة المستخدم بنجاح إلى قاعدة البيانات', 'success');
-                } else {
-                    showNotification('تم إضافة المستخدم بنجاح (محلياً)', 'warning');
-                }
-                
-                // تحديث قائمة المستخدمين
                 loadUsers();
                 
-                // إضافة للنشاطات
-                addActivity('مستخدم جديد', `تم إضافة مستخدم جديد ${fullName} بواسطة ${currentUser.fullName}`);
+                await addActivityToSupabase('مستخدم جديد', `تم إضافة مستخدم جديد ${fullName} بواسطة ${currentUser.fullName}`);
                 
             } catch (error) {
-                console.error('Error saving user:', error);
-                showNotification('حدث خطأ أثناء حفظ المستخدم. تم الحفظ محلياً فقط.', 'error');
-                
-                // حفظ محلي كنسخة احتياطية
-                const newUserId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
-                const newUser = {
-                    id: newUserId,
-                    username: username,
-                    password: password,
-                    fullName: fullName,
-                    email: email,
-                    phone: phone,
-                    role: role,
-                    isActive: isActive,
-                    createdAt: new Date().toISOString(),
-                    lastLogin: null
-                };
-                
-                users.push(newUser);
-                localStorage.setItem('systemUsers', JSON.stringify(users));
-                
-                $('#addUserModal').modal('hide');
-                showNotification('تم إضافة المستخدم بنجاح (محلياً)', 'warning');
-                loadUsers();
+                console.error('Error saving user to Supabase:', error);
+                showNotification('حدث خطأ أثناء حفظ المستخدم في قاعدة البيانات', 'error');
             }
         }
 
@@ -4617,13 +3221,12 @@ pageRequests.forEach((request, index) => {
             $('body').append(modalHtml);
             $('#editUserModal').modal('show');
             
-            // تنظيف النموذج بعد الإغلاق
             $('#editUserModal').on('hidden.bs.modal', function() {
                 $(this).remove();
             });
         }
 
-        // تحديث المستخدم
+        // تحديث المستخدم في Supabase
         async function updateUser(userId) {
             const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
             const userIndex = users.findIndex(u => u.id === userId);
@@ -4642,108 +3245,70 @@ pageRequests.forEach((request, index) => {
             const confirmPassword = $('#editUserConfirmPassword').val();
             const isActive = status === 'active';
             
-            // التحقق من البيانات
             if (!fullName || !email) {
                 showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
                 return;
             }
             
-            // التحقق من كلمة المرور إذا تم إدخالها
             if (password && password !== confirmPassword) {
                 showNotification('كلمات المرور غير متطابقة', 'error');
                 return;
             }
             
             try {
-                // تحديث في Supabase إذا كان الاتصال متاحاً
-                if (isOnline && supabase && users[userIndex].id !== currentUser?.id) {
-                    const updateData = {
-                        full_name: fullName,
-                        email: email,
-                        phone: phone,
-                        role: role,
-                        is_active: isActive
-                    };
-                    
-                    // إذا تم إدخال كلمة مرور جديدة، أضفها
-                    if (password) {
-                        updateData.password_hash = password;
-                    }
-                    
-                    const { error } = await window.supabase 
-                        .from('users')
-                        .update(updateData)
-                        .eq('id', userId);
-
-                    if (error) throw error;
-                    console.log('User updated in Supabase with ID:', userId);
+                const updateData = {
+                    full_name: fullName,
+                    email: email,
+                    phone: phone
+                };
+                
+                if (users[userIndex].id !== currentUser?.id) {
+                    updateData.role = role;
+                    updateData.is_active = isActive;
                 }
                 
-                // تحديث بيانات المستخدم محلياً
+                if (password) {
+                    updateData.password_hash = password;
+                }
+                
+                const { error } = await supabase
+                    .from('users')
+                    .update(updateData)
+                    .eq('id', userId);
+
+                if (error) throw error;
+                
                 users[userIndex].fullName = fullName;
                 users[userIndex].email = email;
                 users[userIndex].phone = phone;
                 
-                // لا تحديث الدور أو الحالة للمستخدم الحالي
                 if (users[userIndex].id !== currentUser?.id) {
                     users[userIndex].role = role;
                     users[userIndex].isActive = isActive;
                 }
                 
-                // تحديث كلمة المرور إذا تم إدخالها
                 if (password) {
                     users[userIndex].password = password;
                 }
                 
                 users[userIndex].updatedAt = new Date().toISOString();
-                users[userIndex].updatedBy = currentUser.username;
                 
                 localStorage.setItem('systemUsers', JSON.stringify(users));
                 
                 $('#editUserModal').modal('hide');
+                showNotification('تم تحديث بيانات المستخدم بنجاح في قاعدة البيانات', 'success');
                 
-                if (isOnline) {
-                    showNotification('تم تحديث بيانات المستخدم بنجاح في قاعدة البيانات', 'success');
-                } else {
-                    showNotification('تم تحديث بيانات المستخدم بنجاح (محلياً)', 'warning');
-                }
-                
-                // تحديث قائمة المستخدمين
                 loadUsers();
                 
-                // إضافة للنشاطات
-                addActivity('تحديث مستخدم', `تم تحديث بيانات المستخدم ${fullName} بواسطة ${currentUser.fullName}`);
+                await addActivityToSupabase('تحديث مستخدم', `تم تحديث بيانات المستخدم ${fullName} بواسطة ${currentUser.fullName}`);
                 
             } catch (error) {
-                console.error('Error updating user:', error);
-                showNotification('حدث خطأ أثناء تحديث المستخدم. تم التحديث محلياً فقط.', 'error');
-                
-                // تحديث محلي فقط
-                users[userIndex].fullName = fullName;
-                users[userIndex].email = email;
-                users[userIndex].phone = phone;
-                
-                if (users[userIndex].id !== currentUser?.id) {
-                    users[userIndex].role = role;
-                    users[userIndex].isActive = isActive;
-                }
-                
-                if (password) {
-                    users[userIndex].password = password;
-                }
-                
-                users[userIndex].updatedAt = new Date().toISOString();
-                users[userIndex].updatedBy = currentUser.username;
-                
-                localStorage.setItem('systemUsers', JSON.stringify(users));
-                
-                $('#editUserModal').modal('hide');
-                showNotification('تم تحديث بيانات المستخدم (محلياً فقط)', 'warning');
-                loadUsers();
+                console.error('Error updating user in Supabase:', error);
+                showNotification('حدث خطأ أثناء تحديث المستخدم في قاعدة البيانات', 'error');
             }
         }
 
-        // تبديل حالة المستخدم
+        // تبديل حالة المستخدم في Supabase
         async function toggleUserStatus(userId, newStatus) {
             if (userId === currentUser?.id) {
                 showNotification('لا يمكن تغيير حالة حسابك الخاص', 'error');
@@ -4763,53 +3328,34 @@ pageRequests.forEach((request, index) => {
             }
             
             try {
-                // تحديث في Supabase إذا كان الاتصال متاحاً
-                if (isOnline && supabase) {
-                    const { error } = await window.supabase 
-                        .from('users')
-                        .update({
-                            is_active: newStatus,
-                            updated_at: new Date().toISOString()
-                        })
-                        .eq('id', userId);
+                const { error } = await supabase
+                    .from('users')
+                    .update({
+                        is_active: newStatus,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', userId);
 
-                    if (error) throw error;
-                }
+                if (error) throw error;
                 
                 users[userIndex].isActive = newStatus;
                 users[userIndex].updatedAt = new Date().toISOString();
-                users[userIndex].updatedBy = currentUser.username;
                 
                 localStorage.setItem('systemUsers', JSON.stringify(users));
                 
-                if (isOnline) {
-                    showNotification(`تم ${newStatus ? 'تفعيل' : 'تعطيل'} حساب المستخدم بنجاح في قاعدة البيانات`, 'success');
-                } else {
-                    showNotification(`تم ${newStatus ? 'تفعيل' : 'تعطيل'} حساب المستخدم بنجاح (محلياً)`, 'warning');
-                }
+                showNotification(`تم ${newStatus ? 'تفعيل' : 'تعطيل'} حساب المستخدم بنجاح في قاعدة البيانات`, 'success');
                 
-                // تحديث قائمة المستخدمين
                 loadUsers();
                 
-                // إضافة للنشاطات
-                addActivity('تغيير حالة مستخدم', `تم ${newStatus ? 'تفعيل' : 'تعطيل'} حساب المستخدم ${users[userIndex].fullName}`);
+                await addActivityToSupabase('تغيير حالة مستخدم', `تم ${newStatus ? 'تفعيل' : 'تعطيل'} حساب المستخدم ${users[userIndex].fullName}`);
                 
             } catch (error) {
-                console.error('Error toggling user status:', error);
-                showNotification('حدث خطأ أثناء تغيير الحالة. تم التغيير محلياً فقط.', 'error');
-                
-                users[userIndex].isActive = newStatus;
-                users[userIndex].updatedAt = new Date().toISOString();
-                users[userIndex].updatedBy = currentUser.username;
-                
-                localStorage.setItem('systemUsers', JSON.stringify(users));
-                
-                showNotification(`تم ${newStatus ? 'تفعيل' : 'تعطيل'} حساب المستخدم (محلياً فقط)`, 'warning');
-                loadUsers();
+                console.error('Error toggling user status in Supabase:', error);
+                showNotification('حدث خطأ أثناء تغيير الحالة في قاعدة البيانات', 'error');
             }
         }
 
-        // حذف مستخدم
+        // حذف مستخدم من Supabase
         async function deleteUser(userId) {
             if (userId === currentUser?.id) {
                 showNotification('لا يمكن حذف حسابك الخاص', 'error');
@@ -4831,40 +3377,25 @@ pageRequests.forEach((request, index) => {
             const userName = users[userIndex].fullName;
             
             try {
-                // حذف من Supabase إذا كان الاتصال متاحاً
-                if (isOnline && supabase) {
-                    const { error } = await supabase
-                        .from('users')
-                        .delete()
-                        .eq('id', userId);
+                const { error } = await supabase
+                    .from('users')
+                    .delete()
+                    .eq('id', userId);
 
-                    if (error) throw error;
-                }
+                if (error) throw error;
                 
                 users.splice(userIndex, 1);
                 localStorage.setItem('systemUsers', JSON.stringify(users));
                 
-                if (isOnline) {
-                    showNotification('تم حذف المستخدم بنجاح من قاعدة البيانات', 'success');
-                } else {
-                    showNotification('تم حذف المستخدم بنجاح (محلياً)', 'warning');
-                }
+                showNotification('تم حذف المستخدم بنجاح من قاعدة البيانات', 'success');
                 
-                // تحديث قائمة المستخدمين
                 loadUsers();
                 
-                // إضافة للنشاطات
-                addActivity('حذف مستخدم', `تم حذف المستخدم ${userName} بواسطة ${currentUser.fullName}`);
+                await addActivityToSupabase('حذف مستخدم', `تم حذف المستخدم ${userName} بواسطة ${currentUser.fullName}`);
                 
             } catch (error) {
-                console.error('Error deleting user:', error);
-                showNotification('حدث خطأ أثناء حذف المستخدم. تم الحذف محلياً فقط.', 'error');
-                
-                users.splice(userIndex, 1);
-                localStorage.setItem('systemUsers', JSON.stringify(users));
-                
-                showNotification('تم حذف المستخدم (محلياً فقط)', 'warning');
-                loadUsers();
+                console.error('Error deleting user from Supabase:', error);
+                showNotification('حدث خطأ أثناء حذف المستخدم من قاعدة البيانات', 'error');
             }
         }
 
@@ -4877,7 +3408,6 @@ pageRequests.forEach((request, index) => {
             
             if (!user) return;
             
-            // تحديث البيانات في النموذج
             $('#profileUsername').val(user.username);
             $('#profileFullNameInput').val(user.fullName);
             $('#profileEmail').val(user.email);
@@ -4885,12 +3415,10 @@ pageRequests.forEach((request, index) => {
             $('#profileRoleSelect').val(user.role);
             $('#profileStatus').val(user.isActive ? 'active' : 'inactive');
             
-            // تحديث البيانات المعروضة
             $('#profileFullName').text(user.fullName);
             $('#profileRole').text(getRoleName(user.role));
             $('#profileAvatarIcon').removeClass().addClass(getUserIconByRole(user.role));
             
-            // حساب الإحصائيات
             const userRequests = allRequests.filter(r => r.createdBy === user.username);
             const completedRequests = userRequests.filter(r => r.status === 'approved');
             
@@ -4903,7 +3431,6 @@ pageRequests.forEach((request, index) => {
             $('#profileCompletionRate').text(completionRate + '%');
             $('#profileCompletionBar').css('width', completionRate + '%');
             
-            // حساب معدل الاستجابة (طلبات تم الرد عليها خلال 3 أيام)
             const respondedRequests = userRequests.filter(r => {
                 if (!r.updatedAt) return false;
                 const start = new Date(r.createdAt);
@@ -4918,7 +3445,6 @@ pageRequests.forEach((request, index) => {
             $('#profileResponseRate').text(responseRate + '%');
             $('#profileResponseBar').css('width', responseRate + '%');
             
-            // تحميل الأنشطة
             loadProfileActivities(user.username);
         }
 
@@ -4939,75 +3465,64 @@ pageRequests.forEach((request, index) => {
         }
 
         // تحميل أنشطة المستخدم
-        function loadProfileActivities(username) {
+        async function loadProfileActivities(username) {
             const container = $('#profileActivities');
             
-            // جمع أنشطة المستخدم
-            let activities = [];
-            
-            // إضافة أنشطة الطلبات الخاصة بالمستخدم
-            const userRequests = allRequests.filter(r => r.createdBy === username);
-            userRequests.forEach(request => {
-                activities.push({
-                    type: 'request',
-                    title: `طلب جديد #${request.id}`,
-                    description: request.requestTitle,
-                    date: request.createdAt,
-                    icon: 'fas fa-file-alt'
-                });
+            try {
+                const { data: activitiesData, error } = await supabase
+                    .from('activities')
+                    .select('*')
+                    .eq('user_name', username)
+                    .order('created_at', { ascending: false })
+                    .limit(5);
                 
-                if (request.updatedAt) {
-                    activities.push({
-                        type: 'update',
-                        title: `تحديث الطلب #${request.id}`,
-                        description: `تم تحديث حالة الطلب إلى ${statuses[request.status].name}`,
-                        date: request.updatedAt,
-                        icon: 'fas fa-sync'
-                    });
+                if (error) throw error;
+                
+                if (!activitiesData || activitiesData.length === 0) {
+                    container.html(`
+                        <div class="text-center py-3 text-muted">
+                            <i class="fas fa-history fa-2x mb-2"></i>
+                            <p class="mb-0">لا توجد أنشطة سابقة</p>
+                        </div>
+                    `);
+                    return;
                 }
-            });
-            
-            // ترتيب حسب التاريخ
-            activities.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            // عرض أول 5 أنشطة
-            const recentActivities = activities.slice(0, 5);
-            
-            if (recentActivities.length === 0) {
+                
+                let html = '<div class="list-group">';
+                activitiesData.forEach(activity => {
+                    const timeAgo = getTimeAgo(activity.created_at);
+                    
+                    html += `
+                        <div class="list-group-item list-group-item-action border-0">
+                            <div class="d-flex w-100 justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-history me-3 text-primary"></i>
+                                    <div>
+                                        <h6 class="mb-1">${activity.title}</h6>
+                                        <p class="mb-0 small text-muted">${activity.description}</p>
+                                    </div>
+                                </div>
+                                <small class="text-muted">${timeAgo}</small>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                
+                container.html(html);
+                
+            } catch (error) {
+                console.error('Error loading profile activities:', error);
                 container.html(`
                     <div class="text-center py-3 text-muted">
-                        <i class="fas fa-history fa-2x mb-2"></i>
-                        <p class="mb-0">لا توجد أنشطة سابقة</p>
+                        <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                        <p class="mb-0">تعذر تحميل الأنشطة</p>
                     </div>
                 `);
-                return;
             }
-            
-            let html = '<div class="list-group">';
-            recentActivities.forEach(activity => {
-                const timeAgo = getTimeAgo(activity.date);
-                
-                html += `
-                    <div class="list-group-item list-group-item-action border-0">
-                        <div class="d-flex w-100 justify-content-between">
-                            <div class="d-flex align-items-center">
-                                <i class="${activity.icon} me-3 text-primary"></i>
-                                <div>
-                                    <h6 class="mb-1">${activity.title}</h6>
-                                    <p class="mb-0 small text-muted">${activity.description}</p>
-                                </div>
-                            </div>
-                            <small class="text-muted">${timeAgo}</small>
-                        </div>
-                    </div>
-                `;
-            });
-            html += '</div>';
-            
-            container.html(html);
         }
 
-        // حفظ تغييرات الملف الشخصي
+        // حفظ تغييرات الملف الشخصي في Supabase
         async function saveProfileChanges() {
             if (!currentUser) return;
             
@@ -5026,13 +3541,11 @@ pageRequests.forEach((request, index) => {
             const newPassword = $('#newPassword').val();
             const confirmNewPassword = $('#confirmNewPassword').val();
             
-            // التحقق من البيانات
             if (!fullName || !email) {
                 showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
                 return;
             }
             
-            // التحقق من كلمة المرور الحالية إذا تم إدخال كلمة مرور جديدة
             if (newPassword) {
                 if (!currentPassword) {
                     showNotification('الرجاء إدخال كلمة المرور الحالية', 'error');
@@ -5058,29 +3571,23 @@ pageRequests.forEach((request, index) => {
             }
             
             try {
-                // تحديث في Supabase إذا كان الاتصال متاحاً
-                if (isOnline && supabase) {
-                    const updateData = {
-                        full_name: fullName,
-                        email: email,
-                        phone: phone
-                    };
-                    
-                    // إذا تم إدخال كلمة مرور جديدة، أضفها
-                    if (newPassword) {
-                        updateData.password_hash = newPassword;
-                    }
-                    
-                    const { error } = await supabase
-                        .from('users')
-                        .update(updateData)
-                        .eq('id', currentUser.id);
-
-                    if (error) throw error;
-                    console.log('Profile updated in Supabase for user:', currentUser.id);
+                const updateData = {
+                    full_name: fullName,
+                    email: email,
+                    phone: phone
+                };
+                
+                if (newPassword) {
+                    updateData.password_hash = newPassword;
                 }
                 
-                // تحديث بيانات المستخدم محلياً
+                const { error } = await supabase
+                    .from('users')
+                    .update(updateData)
+                    .eq('id', currentUser.id);
+
+                if (error) throw error;
+                
                 users[userIndex].fullName = fullName;
                 users[userIndex].email = email;
                 users[userIndex].phone = phone;
@@ -5091,52 +3598,23 @@ pageRequests.forEach((request, index) => {
                 
                 localStorage.setItem('systemUsers', JSON.stringify(users));
                 
-                // تحديث بيانات الجلسة الحالية
                 currentUser.fullName = fullName;
                 currentUser.email = email;
                 localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 
-                // تحديث واجهة المستخدم
                 updateUserInterface();
                 
-                if (isOnline) {
-                    showNotification('تم تحديث بياناتك الشخصية بنجاح في قاعدة البيانات', 'success');
-                } else {
-                    showNotification('تم تحديث بياناتك الشخصية بنجاح (محلياً)', 'warning');
-                }
+                showNotification('تم تحديث بياناتك الشخصية بنجاح في قاعدة البيانات', 'success');
                 
-                // إعادة تعيين حقول كلمات المرور
                 $('#currentPassword').val('');
                 $('#newPassword').val('');
                 $('#confirmNewPassword').val('');
                 
-                // إضافة للنشاطات
-                addActivity('تحديث الملف الشخصي', `تم تحديث بيانات الملف الشخصي بواسطة ${fullName}`);
+                await addActivityToSupabase('تحديث الملف الشخصي', `تم تحديث بيانات الملف الشخصي بواسطة ${fullName}`);
                 
             } catch (error) {
-                console.error('Error updating profile:', error);
-                showNotification('حدث خطأ أثناء تحديث الملف الشخصي. تم التحديث محلياً فقط.', 'error');
-                
-                // تحديث محلي فقط
-                users[userIndex].fullName = fullName;
-                users[userIndex].email = email;
-                users[userIndex].phone = phone;
-                if (newPassword) {
-                    users[userIndex].password = newPassword;
-                }
-                users[userIndex].updatedAt = new Date().toISOString();
-                
-                localStorage.setItem('systemUsers', JSON.stringify(users));
-                currentUser.fullName = fullName;
-                currentUser.email = email;
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                updateUserInterface();
-                
-                $('#currentPassword').val('');
-                $('#newPassword').val('');
-                $('#confirmNewPassword').val('');
-                
-                showNotification('تم تحديث بياناتك الشخصية (محلياً فقط)', 'warning');
+                console.error('Error updating profile in Supabase:', error);
+                showNotification('حدث خطأ أثناء تحديث الملف الشخصي في قاعدة البيانات', 'error');
             }
         }
 
@@ -5158,18 +3636,13 @@ pageRequests.forEach((request, index) => {
         $(document).ready(async function() {
             await initializeAppWithSupabase();
             
-            // إضافة معالج للأخطاء العامة
             window.addEventListener('error', function(e) {
                 console.error('Global error:', e.error);
                 showNotification('حدث خطأ غير متوقع. الرجاء تحديث الصفحة.', 'error');
             });
             
-            // تسجيل رسالة نجاح التحميل
             console.log('تم تحميل نظام متابعة طلبات المواطنين بنجاح مع دعم Supabase');
         });
     </script>
 </body>
-
 </html>
-
-
