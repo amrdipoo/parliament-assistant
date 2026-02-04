@@ -1479,16 +1479,27 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <!-- Supabase منفصل -->
+<!-- Supabase Client -->
 <script type="module">
-    // تكوين Supabase - نفس المفاتيح من صفحة تسجيل الدخول
-    const SUPABASE_URL = 'https://gcgjzqiumgesultletws.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjZ2p6cWl1bWdlc3VsdGxldHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0Njg1MTksImV4cCI6MjA4NDA0NDUxOX0.ZGQMe3J22-pdlB_zU_jKofk-tR56kWY7TK5JfDB_fJo';
-    
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-    
-    // إنشاء عميل Supabase وجعله متاحاً عالمياً
-    window.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    console.log('Supabase client initialized successfully');
+// استيراد مكتبة Supabase
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+// تكوين Supabase
+const SUPABASE_URL = 'https://gcgjzqiumgesultletws.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjZ2p6cWl1bWdlc3VsdGxldHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0Njg1MTksImV4cCI6MjA4NDA0NDUxOX0.ZGQMe3J22-pdlB_zU_jKofk-tR56kWY7TK5JfDB_fJo';
+
+// إنشاء عميل Supabase
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// جعله متاحاً عالمياً
+window.supabase = supabase;
+
+console.log('✅ Supabase client initialized successfully');
+
+// بدء التطبيق بعد التأكد من تهيئة Supabase
+$(document).ready(async function() {
+    await initializeAppWithSupabase();
+});
 </script>
 
 <!-- التطبيق الرئيسي -->
@@ -1679,7 +1690,6 @@ async function initializeAppWithSupabase() {
     // التحقق من وجود مستخدم مسجل الدخول
     const currentUserStr = localStorage.getItem('currentUser');
     if (!currentUserStr) {
-        // إذا لم يكن هناك مستخدم، ارجع لصفحة تسجيل الدخول
         window.location.href = 'index.html';
         return;
     }
@@ -1689,18 +1699,26 @@ async function initializeAppWithSupabase() {
         updateConnectionStatus('جاري الاتصال...', 'warning');
         
         // التحقق من أن Supabase جاهز
-        if (!supabase) {
-            console.error('Supabase client is not initialized');
+        if (!window.supabase) {
+            console.error('❌ Supabase client is not initialized');
             throw new Error('Supabase client is not initialized');
         }
         
-        // تحميل بيانات اختبارية إذا لزم الأمر
-        await loadSampleDataIfNeeded();
+        // اختبار الاتصال بـ Supabase
+        const { error: testError } = await window.supabase
+            .from('requests')
+            .select('count')
+            .limit(1);
         
-        // تحميل الطلبات من Supabase
+        if (testError) {
+            console.error('❌ Connection test failed:', testError);
+            throw testError;
+        }
+        
+        console.log('✅ Connected to Supabase successfully');
+        
+        // تحميل البيانات من قاعدة البيانات
         await loadRequestsFromSupabase();
-        
-        // تحميل المستخدمين من Supabase
         await loadUsersFromSupabase();
         
         // تهيئة التطبيق
@@ -1710,42 +1728,43 @@ async function initializeAppWithSupabase() {
         updateConnectionStatus('متصل بالسحابة', 'success');
         isOnline = true;
         
+        showNotification('تم الاتصال بقاعدة البيانات بنجاح', 'success');
+        
     } catch (error) {
-        console.error('Error initializing app with Supabase:', error);
+        console.error('❌ Error initializing app:', error);
         updateConnectionStatus('غير متصل بالسحابة (الوضع المحلي)', 'danger');
         isOnline = false;
         
-        // استخدام البيانات المحلية كنسخة احتياطية
+        // استخدام البيانات المحلية
         await initializeAppWithLocalStorage();
+        showNotification('العمل في الوضع المحلي. تحقق من اتصال الإنترنت', 'warning');
     }
     
     // بدء فحص الاتصال بشكل دوري
     startConnectionCheck();
 }
-
         // دالة تحميل الطلبات من Supabase
         // دالة تحميل الطلبات من Supabase
 async function loadRequestsFromSupabase() {
     try {
-        console.log('Loading requests from Supabase...');
+        console.log('📥 Loading requests from Supabase...');
         
-        if (!supabase) {
-            console.error('Supabase client is not available');
-            throw new Error('Supabase client is not available');
+        if (!window.supabase) {
+            console.error('❌ Supabase client not available');
+            throw new Error('Supabase client not available');
         }
         
-        const { data, error } = await supabase
+        const { data, error } = await window.supabase
             .from('requests')
             .select('*')
             .order('created_at', { ascending: false });
         
         if (error) {
-            console.error('Error loading requests from Supabase:', error);
+            console.error('❌ Error loading requests:', error);
             throw error;
         }
         
         if (data && data.length > 0) {
-            // تحويل البيانات من Supabase إلى التنسيق المحلي
             allRequests = data.map(item => ({
                 id: item.id,
                 nationalId: item.national_id,
@@ -1753,30 +1772,29 @@ async function loadRequestsFromSupabase() {
                 requestTitle: item.request_title,
                 requestSummary: item.request_summary,
                 requestDate: item.request_date,
-                category: item.category || 'electricity', // قيمة افتراضية
-                status: item.status || 'submitted', // قيمة افتراضية
+                category: item.category || 'electricity',
+                status: item.status || 'submitted',
                 file: item.file_url,
                 comments: item.comments,
-                priority: item.priority || 'medium', // قيمة افتراضية
+                priority: item.priority || 'medium',
                 createdAt: item.created_at,
                 createdBy: item.created_by,
                 updatedAt: item.updated_at,
                 updatedBy: item.updated_by
             }));
             
-            console.log(`Loaded ${allRequests.length} requests from Supabase`);
-            
-            // حفظ نسخة محلية للنسخ الاحتياطي
+            console.log(`✅ Loaded ${allRequests.length} requests from Supabase`);
             saveDataToLocalStorage();
+            
+            return allRequests;
         } else {
-            console.log('No requests found in Supabase, loading from local storage');
+            console.log('ℹ️ No requests found in Supabase');
             await loadRequestsFromLocalStorage();
+            return allRequests;
         }
         
-        return allRequests;
-        
     } catch (error) {
-        console.error('Failed to load from Supabase, using local storage:', error);
+        console.error('❌ Failed to load from Supabase:', error);
         await loadRequestsFromLocalStorage();
         return allRequests;
     }
@@ -5153,3 +5171,4 @@ pageRequests.forEach((request, index) => {
 </body>
 
 </html>
+
