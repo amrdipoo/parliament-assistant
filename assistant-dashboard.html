@@ -1478,8 +1478,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Supabase منفصل -->
-<!-- Supabase Client -->
+
+<!-- Supabase Client - طريقة صحيحة -->
 <script type="module">
 // استيراد مكتبة Supabase
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
@@ -1505,7 +1505,7 @@ $(document).ready(async function() {
 <!-- التطبيق الرئيسي -->
 <script>
     // استخدام المتغير العالمي
-    const supabase = window.supabase;
+   
     
     // تعريف البيانات
     const categories = {
@@ -1601,7 +1601,7 @@ let allRequests = [];
 async function loadSampleDataIfNeeded() {
     try {
         // تحقق إذا كانت هناك طلبات في Supabase
-        const { data, error } = await supabase
+        const { data, error } = await window.supabase
             .from('requests')
             .select('*')
             .limit(1);
@@ -1654,7 +1654,7 @@ async function loadSampleDataIfNeeded() {
                 }
             ];
             
-            const { error: insertError } = await supabase
+            const { error: insertError } = await window.supabase
                 .from('requests')
                 .insert(sampleRequests);
                 
@@ -3415,7 +3415,7 @@ pageRequests.forEach((request, index) => {
                 
                 // المحاولة للحفظ في Supabase إذا كان الاتصال متاحاً
                 if (isOnline && supabase) {
-                    const { data, error } = await supabase
+                    const { data, error } = await window.supabase 
                         .from('requests')
                         .insert([newRequestData])
                         .select()
@@ -3626,7 +3626,7 @@ pageRequests.forEach((request, index) => {
             try {
                 // تحديث في Supabase إذا كان الاتصال متاحاً
                 if (isOnline && supabase) {
-                    const { error } = await supabase
+                    const { error } = await window.supabase 
                         .from('requests')
                         .update({
                             comments: newComments,
@@ -3683,7 +3683,7 @@ pageRequests.forEach((request, index) => {
             try {
                 // تحديث في Supabase إذا كان الاتصال متاحاً
                 if (isOnline && supabase) {
-                    const { error } = await supabase
+                    const { error } = await window.supabase 
                         .from('requests')
                         .update({
                             status: newStatus,
@@ -4442,7 +4442,7 @@ pageRequests.forEach((request, index) => {
                 // محاولة الحفظ في Supabase
                 let newUserId;
                 if (isOnline && supabase) {
-                    const { data, error } = await supabase
+                    const { data, error } = await window.supabase 
                         .from('users')
                         .insert([{
                             username: username,
@@ -4670,7 +4670,7 @@ pageRequests.forEach((request, index) => {
                         updateData.password_hash = password;
                     }
                     
-                    const { error } = await supabase
+                    const { error } = await window.supabase 
                         .from('users')
                         .update(updateData)
                         .eq('id', userId);
@@ -4765,7 +4765,7 @@ pageRequests.forEach((request, index) => {
             try {
                 // تحديث في Supabase إذا كان الاتصال متاحاً
                 if (isOnline && supabase) {
-                    const { error } = await supabase
+                    const { error } = await window.supabase 
                         .from('users')
                         .update({
                             is_active: newStatus,
@@ -5171,4 +5171,5 @@ pageRequests.forEach((request, index) => {
 </body>
 
 </html>
+
 
