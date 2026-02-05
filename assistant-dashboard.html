@@ -1602,7 +1602,7 @@ async function loadSampleDataIfNeeded() {
     try {
         // تحقق إذا كانت هناك طلبات في Supabase
         const { data, error } = await window.supabase
-            .from('requests')
+            .from('citizen_requests')
             .select('*')
             .limit(1);
             
@@ -1655,7 +1655,7 @@ async function loadSampleDataIfNeeded() {
             ];
             
             const { error: insertError } = await window.supabase
-                .from('requests')
+                .from('citizen_requests')
                 .insert(sampleRequests);
                 
             if (insertError) throw insertError;
@@ -1667,6 +1667,9 @@ async function loadSampleDataIfNeeded() {
     }
 }
 		
+        // في بداية الكود مع المتغيرات العامة
+		let isSavingRequest = false; // منع حفظ الطلب مرتين
+		let modalOpen = false; // تتبع حالة المودال
         let currentPage = 1;
         const itemsPerPage = 10;
         let filteredRequests = [];
@@ -1685,9 +1688,8 @@ async function loadSampleDataIfNeeded() {
         let isOnline = false;
 
         // دالة بدء التطبيق مع Supabase
-        // دالة بدء التطبيق مع Supabase
-async function initializeAppWithSupabase() {
-    // التحقق من وجود مستخدم مسجل الدخول
+       
+      async function initializeAppWithSupabase() {
     const currentUserStr = localStorage.getItem('currentUser');
     if (!currentUserStr) {
         window.location.href = 'index.html';
@@ -1696,71 +1698,43 @@ async function initializeAppWithSupabase() {
     
     try {
         currentUser = JSON.parse(currentUserStr);
-        updateConnectionStatus('جاري الاتصال...', 'warning');
         
-        // التحقق من أن Supabase جاهز
-        if (!window.supabase) {
-            console.error('❌ Supabase client is not initialized');
+        if (!supabase) {
             throw new Error('Supabase client is not initialized');
         }
         
-        // اختبار الاتصال بـ Supabase
-        const { error: testError } = await window.supabase
-            .from('requests')
-            .select('count')
-            .limit(1);
-        
-        if (testError) {
-            console.error('❌ Connection test failed:', testError);
-            throw testError;
-        }
-        
-        console.log('✅ Connected to Supabase successfully');
-        
-        // تحميل البيانات من قاعدة البيانات
+        // Load data directly from Supabase (no local fallback)
         await loadRequestsFromSupabase();
         await loadUsersFromSupabase();
         
-        // تهيئة التطبيق
         initializeApp();
-        
-        // تحديث حالة الاتصال
         updateConnectionStatus('متصل بالسحابة', 'success');
         isOnline = true;
-        
-        showNotification('تم الاتصال بقاعدة البيانات بنجاح', 'success');
-        
     } catch (error) {
-        console.error('❌ Error initializing app:', error);
-        updateConnectionStatus('غير متصل بالسحابة (الوضع المحلي)', 'danger');
+        console.error('Error initializing app:', error);
+        updateConnectionStatus('غير متصل بالسحابة', 'danger');
         isOnline = false;
-        
-        // استخدام البيانات المحلية
-        await initializeAppWithLocalStorage();
-        showNotification('العمل في الوضع المحلي. تحقق من اتصال الإنترنت', 'warning');
+        showNotification('فشل تحميل البيانات. تحقق من اتصال الإنترنت', 'error');
+        // Don't fallback to local storage - show error instead
     }
     
-    // بدء فحص الاتصال بشكل دوري
     startConnectionCheck();
 }
-        // دالة تحميل الطلبات من Supabase
-        // دالة تحميل الطلبات من Supabase
+ // Replace loadRequestsFromLocalStorage with Supabase-only
 async function loadRequestsFromSupabase() {
     try {
-        console.log('📥 Loading requests from Supabase...');
-        
-        if (!window.supabase) {
-            console.error('❌ Supabase client not available');
-            throw new Error('Supabase client not available');
+        console.log('Loading requests from Supabase...');
+        if (!supabase) {
+            throw new Error('Supabase client is not available');
         }
         
-        const { data, error } = await window.supabase
-            .from('requests')
+        const { data, error } = await supabase
+            .from('citizen_requests')  // Changed from 'requests'
             .select('*')
             .order('created_at', { ascending: false });
         
         if (error) {
-            console.error('❌ Error loading requests:', error);
+            console.error('Error loading requests:', error);
             throw error;
         }
         
@@ -1774,32 +1748,26 @@ async function loadRequestsFromSupabase() {
                 requestDate: item.request_date,
                 category: item.category || 'electricity',
                 status: item.status || 'submitted',
-                file: item.file_url,
-                comments: item.comments,
+                file: item.file_url || item.attachment_url, // Handle both columns
+                comments: item.comments || item.admin_comment, // Handle both
                 priority: item.priority || 'medium',
                 createdAt: item.created_at,
                 createdBy: item.created_by,
                 updatedAt: item.updated_at,
                 updatedBy: item.updated_by
             }));
-            
-            console.log(`✅ Loaded ${allRequests.length} requests from Supabase`);
-            saveDataToLocalStorage();
-            
-            return allRequests;
+            console.log(`Loaded ${allRequests.length} requests from Supabase`);
         } else {
-            console.log('ℹ️ No requests found in Supabase');
-            await loadRequestsFromLocalStorage();
-            return allRequests;
+            allRequests = [];
+            console.log('No requests found in Supabase');
         }
         
-    } catch (error) {
-        console.error('❌ Failed to load from Supabase:', error);
-        await loadRequestsFromLocalStorage();
         return allRequests;
+    } catch (error) {
+        console.error('Failed to load from Supabase:', error);
+        throw error;
     }
 }
-
         // دالة تحميل الطلبات من التخزين المحلي
         async function loadRequestsFromLocalStorage() {
             const localData = localStorage.getItem('citizenRequests');
@@ -1995,7 +1963,7 @@ async function loadRequestsFromSupabase() {
                     }
                     
                     // اختبار الاتصال البسيط
-                    const { error } = await supabase.from('requests').select('count').limit(1);
+                    const { error } = await supabase.from('citizen_requests').select('count').limit(1);
                     
                     if (error) {
                         throw error;
@@ -2056,7 +2024,6 @@ async function loadRequestsFromSupabase() {
             };
             return icons[role] || 'fas fa-user-circle';
         }
-
         // إعداد أحداث التطبيق الرئيسي
         function setupMainEventListeners() {
             // البحث أثناء الكتابة
@@ -2161,28 +2128,21 @@ async function loadRequestsFromSupabase() {
         }
 
         // دالة مزامنة البيانات مع Supabase
-        async function syncDataWithSupabase() {
-            try {
-                if (!supabase) {
-                    throw new Error('Supabase client not initialized');
-                }
-                
-                showNotification('جاري مزامنة البيانات مع السحابة...', 'info');
-                
-                // تحديث الطلبات من Supabase
-                await loadRequestsFromSupabase();
-                
-                // تحديث المستخدمين من Supabase
-                await loadUsersFromSupabase();
-                
-                refreshData();
-                showNotification('تمت مزامنة البيانات بنجاح', 'success');
-                
-            } catch (error) {
-                console.error('Sync error:', error);
-                showNotification('فشلت المزامنة. تحقق من اتصال الإنترنت', 'error');
-            }
-        }
+      async function syncDataWithSupabase() {
+    try {
+        showNotification('جاري مزامنة البيانات...', 'info');
+        
+        // Just reload from Supabase
+        await loadRequestsFromSupabase();
+        await loadUsersFromSupabase();
+        
+        refreshData();
+        showNotification('تمت مزامنة البيانات بنجاح', 'success');
+    } catch (error) {
+        console.error('Sync error:', error);
+        showNotification('فشلت المزامنة. تحقق من اتصال الإنترنت', 'error');
+    }
+}
 
         // إعداد صفحة البحث المتقدم
         function initSearchPage() {
@@ -2369,7 +2329,7 @@ async function loadRequestsFromSupabase() {
                                 </div>
                                 
                                 <div class="mt-3">
-                                    <button class="btn btn-sm btn-outline-primary w-100" onclick="showRequestDetails(${request.id})">
+                                    <button class="btn btn-primary" id="updateRequestBtn" data-request-id="${request.id}">
                                         <i class="fas fa-eye me-1"></i>عرض التفاصيل
                                     </button>
                                 </div>
@@ -2830,7 +2790,6 @@ async function loadRequestsFromSupabase() {
         }
 
         // عرض نتائج البحث أثناء الكتابة
-        // عرض نتائج البحث أثناء الكتابة
 function showSearchResults(searchTerm) {
     if (searchTerm.length < 2) {
         $('#searchResults').hide();
@@ -3274,230 +3233,338 @@ pageRequests.forEach((request, index) => {
             container.html(html);
         }
 
-        // فتح نموذج الطلب الجديد
-        function openNewRequestModal() {
-            const modalHtml = `
-                <div class="modal fade" id="newRequestModal" tabindex="-1">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header bg-primary text-white">
-                                <h5 class="modal-title">
-                                    <i class="fas fa-plus-circle me-2"></i>طلب جديد
-                                </h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        // حفظ الطلب الجديد
+async function saveNewRequest() {
+    // منع الحفظ المتكرر
+    if (isSavingRequest) {
+        console.log('الطلب قيد الحفظ بالفعل...');
+        return;
+    }
+    
+    const nationalId = $('#newNationalId').val().trim();
+    const applicantName = $('#newApplicantName').val().trim();
+    const category = $('#newCategory').val();
+    const priority = $('#newPriority').val();
+    const requestTitle = $('#newRequestTitle').val().trim();
+    const requestSummary = $('#newRequestSummary').val().trim();
+    
+    // التحقق من البيانات
+    if (!nationalId || nationalId.length !== 14 || !/^\d+$/.test(nationalId)) {
+        showNotification('الرجاء إدخال رقم قومي صحيح مكون من 14 رقم', 'error');
+        return;
+    }
+    
+    if (!applicantName || !category || !requestTitle || !requestSummary) {
+        showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
+        return;
+    }
+    
+    try {
+        // تفعيل حالة الحفظ
+        isSavingRequest = true;
+        const submitBtn = $('#submitNewRequestBtn');
+        submitBtn.prop('disabled', true);
+        submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>جاري الحفظ...');
+        
+        // حفظ الطلب في قاعدة البيانات
+        const newRequestId = await saveRequestToSupabase({
+            nationalId: nationalId,
+            applicantName: applicantName,
+            requestTitle: requestTitle,
+            requestSummary: requestSummary,
+            requestDate: new Date().toISOString().split('T')[0],
+            category: category,
+            status: 'submitted',
+            file: null,
+            comments: '',
+            priority: priority,
+            entity: category
+        });
+        
+        // إغلاق المودال
+        if ($('#newRequestModal').length) {
+            $('#newRequestModal').modal('hide');
+        }
+        
+        // عرض رسالة نجاح
+        showNotification('تم إضافة الطلب بنجاح', 'success');
+        
+        // ============================================
+        // استخدام دالة التحديث المركزية
+        // ============================================
+        await updateMainPage();
+        
+        // إضافة للأنشطة
+        if (currentUser && currentUser.fullName) {
+            addActivity('طلب جديد', `تم إضافة طلب جديد #${newRequestId} بواسطة ${currentUser.fullName}`);
+        }
+        
+    } catch (error) {
+        console.error('Error saving request:', error);
+        showNotification('فشل حفظ الطلب. تحقق من اتصال الإنترنت', 'error');
+    } finally {
+        // إعادة تفعيل الزر وإعادة حالة الحفظ
+        isSavingRequest = false;
+        const submitBtn = $('#submitNewRequestBtn');
+        if (submitBtn.length) {
+            submitBtn.prop('disabled', false);
+            submitBtn.html('<i class="fas fa-save me-2"></i>حفظ الطلب');
+        }
+    }
+}
+	// تحديث البيانات الرئيسية في الصفحة
+async function refreshMainData() {
+    try {
+        // إعادة تحميل البيانات من قاعدة البيانات
+        await loadRequestsFromSupabase();
+        
+        // تحديث عرض البيانات
+        refreshData();
+        
+        // تحديث الرسوم البيانية (إذا كانت موجودة)
+        if (typeof renderCategoryChart === 'function') {
+            renderCategoryChart();
+        }
+        
+        if (typeof renderStatusChart === 'function') {
+            renderStatusChart();
+        }
+        
+        // تحديث الإحصائيات (إذا كانت موجودة)
+        if (typeof renderCategoryStatistics === 'function') {
+            renderCategoryStatistics();
+        }
+        
+        if (typeof renderCategoriesGrid === 'function') {
+            renderCategoriesGrid();
+        }
+        
+        // تحديث الطلبات العاجلة (إذا كانت موجودة)
+        if (typeof loadUrgentRequests === 'function') {
+            loadUrgentRequests();
+        }
+        
+        // تحديث مؤشرات الأداء (إذا كانت موجودة)
+        if (typeof updatePerformanceMetrics === 'function') {
+            updatePerformanceMetrics();
+        }
+        
+        console.log('تم تحديث البيانات بنجاح');
+    } catch (error) {
+        console.error('خطأ في تحديث البيانات:', error);
+        showNotification('فشل تحديث البيانات', 'error');
+    }
+}
+// فتح نموذج الطلب الجديد
+function openNewRequestModal() {
+    // إغلاق وإزالة أي مودال قديم
+    if ($('#newRequestModal').length) {
+        $('#newRequestModal').modal('hide');
+        $('#newRequestModal').remove();
+    }
+    
+    const modalHtml = `
+    <div class="modal fade" id="newRequestModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-plus-circle me-2"></i>طلب جديد
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newRequestForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="newNationalId" class="form-label fw-bold">
+                                    <i class="fas fa-id-card me-2"></i>الرقم القومي
+                                </label>
+                                <input type="text" class="form-control" id="newNationalId" placeholder="14 رقم" maxlength="14" required>
                             </div>
-                            <div class="modal-body">
-                                <form id="newRequestForm">
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <label for="newNationalId" class="form-label fw-bold">
-                                                <i class="fas fa-id-card me-2"></i>الرقم القومي
-                                            </label>
-                                            <input type="text" class="form-control" id="newNationalId" 
-                                                   placeholder="14 رقم" maxlength="14" required>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="newApplicantName" class="form-label fw-bold">
-                                                <i class="fas fa-user me-2"></i>اسم مقدم الطلب
-                                            </label>
-                                            <input type="text" class="form-control" id="newApplicantName" required>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <label for="newCategory" class="form-label fw-bold">
-                                                <i class="fas fa-layer-group me-2"></i>الهيئة الحكومية
-                                            </label>
-                                            <select class="form-select" id="newCategory" required>
-                                                <option value="">اختر الهيئة</option>
-                                                ${Object.entries(categories).map(([key, cat]) => 
-                                                    `<option value="${key}">${cat.name}</option>`
-                                                ).join('')}
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="newPriority" class="form-label fw-bold">
-                                                <i class="fas fa-exclamation-circle me-2"></i>الأولوية
-                                            </label>
-                                            <select class="form-select" id="newPriority" required>
-                                                <option value="low">منخفض</option>
-                                                <option value="medium">متوسط</option>
-                                                <option value="high">عاجل</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="newRequestTitle" class="form-label fw-bold">
-                                            <i class="fas fa-heading me-2"></i>عنوان الطلب
-                                        </label>
-                                        <input type="text" class="form-control" id="newRequestTitle" required>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="newRequestSummary" class="form-label fw-bold">
-                                            <i class="fas fa-file-alt me-2"></i>تفاصيل الطلب
-                                        </label>
-                                        <textarea class="form-control" id="newRequestSummary" rows="4" required></textarea>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="newFile" class="form-label fw-bold">
-                                            <i class="fas fa-paperclip me-2"></i>إرفاق ملف (اختياري)
-                                        </label>
-                                        <input type="file" class="form-control" id="newFile">
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                                <button type="button" class="btn btn-primary" id="submitNewRequestBtn">
-                                    <i class="fas fa-save me-2"></i>حفظ الطلب
-                                </button>
+                            <div class="col-md-6">
+                                <label for="newApplicantName" class="form-label fw-bold">
+                                    <i class="fas fa-user me-2"></i>اسم مقدم الطلب
+                                </label>
+                                <input type="text" class="form-control" id="newApplicantName" required>
                             </div>
                         </div>
-                    </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="newCategory" class="form-label fw-bold">
+                                    <i class="fas fa-layer-group me-2"></i>الهيئة الحكومية
+                                </label>
+                                <select class="form-select" id="newCategory" required>
+                                    <option value="">اختر الهيئة</option>
+                                    ${Object.entries(categories).map(([key, cat]) => 
+                                        `<option value="${key}">${cat.name}</option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="newPriority" class="form-label fw-bold">
+                                    <i class="fas fa-exclamation-circle me-2"></i>الأولوية
+                                </label>
+                                <select class="form-select" id="newPriority" required>
+                                    <option value="low">منخفض</option>
+                                    <option value="medium" selected>متوسط</option>
+                                    <option value="high">عاجل</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newRequestTitle" class="form-label fw-bold">
+                                <i class="fas fa-heading me-2"></i>عنوان الطلب
+                            </label>
+                            <input type="text" class="form-control" id="newRequestTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newRequestSummary" class="form-label fw-bold">
+                                <i class="fas fa-file-alt me-2"></i>تفاصيل الطلب
+                            </label>
+                            <textarea class="form-control" id="newRequestSummary" rows="4" required></textarea>
+                        </div>
+                    </form>
                 </div>
-            `;
-            
-            $('body').append(modalHtml);
-            $('#newRequestModal').modal('show');
-            
-            // إضافة حدث لحفظ الطلب
-            $('#submitNewRequestBtn').off('click').on('click', async function() {
-                await saveNewRequest();
-            });
-            
-            // تنظيف النموذج بعد الإغلاق
-            $('#newRequestModal').on('hidden.bs.modal', function() {
-                $(this).remove();
-            });
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>إلغاء
+                    </button>
+                    <button type="button" class="btn btn-primary" id="submitNewRequestBtn">
+                        <i class="fas fa-save me-2"></i>حفظ الطلب
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    `;
+    
+    // إضافة المودال إلى الـ DOM
+    $('body').append(modalHtml);
+    
+    // إظهار المودال
+    const modal = new bootstrap.Modal(document.getElementById('newRequestModal'));
+    modal.show();
+    
+    // منع الضغط على مفتاح Enter في الحقول (ما عدا textarea)
+    $('#newRequestForm').on('keydown', 'input, select', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            return false;
         }
-
+    });
+    
+    // ربط زر الحفظ (باستخدام حدث واحد فقط)
+    $('#submitNewRequestBtn')
+        .off('click') // إزالة أي معالجات سابقة
+        .on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            saveNewRequest();
+        });
+    
+    // تنظيف عند إغلاق المودال
+    $('#newRequestModal').on('hidden.bs.modal', function() {
+        // إزالة معالجات الأحداث
+        $('#submitNewRequestBtn').off('click');
+        $('#newRequestForm').off('keydown');
+        
+        // إزالة المودال من الـ DOM
+        $(this).remove();
+    });
+}
         // حفظ الطلب الجديد
-        async function saveNewRequest() {
-            const nationalId = $('#newNationalId').val().trim();
-            const applicantName = $('#newApplicantName').val().trim();
-            const category = $('#newCategory').val();
-            const priority = $('#newPriority').val();
-            const requestTitle = $('#newRequestTitle').val().trim();
-            const requestSummary = $('#newRequestSummary').val().trim();
+		window.saveNewRequest = async function() {
+    const nationalId = $('#newNationalId').val().trim();
+    const applicantName = $('#newApplicantName').val().trim();
+    const category = $('#newCategory').val();
+    const priority = $('#newPriority').val();
+    const requestTitle = $('#newRequestTitle').val().trim();
+    const requestSummary = $('#newRequestSummary').val().trim();
+    
+    if (!nationalId || nationalId.length !== 14 || !/^\d+$/.test(nationalId)) {
+        showNotification('الرجاء إدخال رقم قومي صحيح مكون من 14 رقم', 'error');
+        return;
+    }
+    
+    if (!applicantName || !category || !requestTitle || !requestSummary) {
+        showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
+        return;
+    }
+    
+    try {
+        // Save directly to Supabase
+        const newRequestId = await saveRequestToSupabase({
+            nationalId: nationalId,
+            applicantName: applicantName,
+            requestTitle: requestTitle,
+            requestSummary: requestSummary,
+            requestDate: new Date().toISOString().split('T')[0],
+            category: category,
+            status: 'submitted',
+            file: null,
+            comments: '',
+            priority: priority
+        });
+        
+        // Reload all requests from Supabase
+        await loadRequestsFromSupabase();
+        
+        $('#newRequestModal').modal('hide');
+        showNotification('تم إضافة الطلب بنجاح', 'success');
+        refreshData();
+        addActivity('طلب جديد', `تم إضافة طلب جديد #${newRequestId} بواسطة ${currentUser.fullName}`);
+    } catch (error) {
+        console.error('Error saving request:', error);
+        showNotification('فشل حفظ الطلب. تحقق من اتصال الإنترنت', 'error');
+    }
+};
+		// Replace saveDataToLocalStorage with Supabase insert/update
+async function saveRequestToSupabase(requestData) {
+    try {
+        // Map to your actual schema
+        const requestDataMapped = {
+            national_id: requestData.nationalId,
+            applicant_name: requestData.applicantName,
+            request_title: requestData.requestTitle,
+            request_summary: requestData.requestSummary,
+            request_date: requestData.requestDate,
+            category: requestData.category,
+            status: requestData.status,
+            file_url: requestData.file,
+            comments: requestData.comments,
+            priority: requestData.priority,
+            created_by: currentUser.id, // Using UUID
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        };
+        
+        // If request has an ID, update it
+        if (requestData.id) {
+            const { error } = await supabase
+                .from('citizen_requests')  // Changed from 'requests'
+                .update(requestDataMapped)
+                .eq('id', requestData.id);
             
-            // التحقق من البيانات
-            if (!nationalId || nationalId.length !== 14 || !/^\d+$/.test(nationalId)) {
-                showNotification('الرجاء إدخال رقم قومي صحيح مكون من 14 رقم', 'error');
-                return;
-            }
+            if (error) throw error;
+            console.log('Request updated in Supabase');
+        } else {
+            // Otherwise, insert new request
+            const { data, error } = await supabase
+                .from('citizen_requests')  // Changed from 'requests'
+                .insert([requestDataMapped])
+                .select()
+                .single();
             
-            if (!applicantName || !category || !requestTitle || !requestSummary) {
-                showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
-                return;
-            }
-
-            try {
-                // إعداد بيانات الطلب الجديد
-                const newRequestData = {
-                    national_id: nationalId,
-                    applicant_name: applicantName,
-                    request_title: requestTitle,
-                    request_summary: requestSummary,
-                    request_date: new Date().toISOString().split('T')[0],
-                    category: category,
-                    status: 'submitted',
-                    file_url: null,
-                    comments: '',
-                    priority: priority,
-                    created_by: currentUser ? currentUser.username : 'system'
-                };
-
-                let savedRequestId;
-                
-                // المحاولة للحفظ في Supabase إذا كان الاتصال متاحاً
-                if (isOnline && supabase) {
-                    const { data, error } = await window.supabase 
-                        .from('requests')
-                        .insert([newRequestData])
-                        .select()
-                        .single();
-
-                    if (error) {
-                        console.error('Error saving to Supabase:', error);
-                        throw error;
-                    }
-
-                    savedRequestId = data.id;
-                    console.log('Request saved to Supabase with ID:', savedRequestId);
-                } else {
-                    // توليد ID محلياً
-                    savedRequestId = allRequests.length > 0 ? Math.max(...allRequests.map(r => r.id)) + 1 : 1001;
-                    console.log('Saving locally with ID:', savedRequestId);
-                }
-
-                // إضافة للبيانات المحلية
-                const newRequest = {
-                    id: savedRequestId,
-                    nationalId: nationalId,
-                    applicantName: applicantName,
-                    requestTitle: requestTitle,
-                    requestSummary: requestSummary,
-                    requestDate: new Date().toISOString().split('T')[0],
-                    category: category,
-                    status: 'submitted',
-                    file: null,
-                    comments: '',
-                    priority: priority,
-                    createdAt: new Date().toISOString(),
-                    createdBy: currentUser ? currentUser.username : 'system'
-                };
-
-                allRequests.unshift(newRequest);
-                saveDataToLocalStorage();
-                
-                $('#newRequestModal').modal('hide');
-                
-                if (isOnline) {
-                    showNotification('تم إضافة الطلب بنجاح إلى قاعدة البيانات', 'success');
-                } else {
-                    showNotification('تم إضافة الطلب بنجاح (محلياً)', 'warning');
-                }
-                
-                // تحديث البيانات
-                refreshData();
-                
-                // إضافة للأنشطة
-                addActivity('طلب جديد', `تم إضافة طلب جديد #${savedRequestId} بواسطة ${currentUser ? currentUser.fullName : 'المسؤول'}`);
-
-            } catch (error) {
-                console.error('Error saving request:', error);
-                
-                // حفظ محلي كنسخة احتياطية
-                const newId = allRequests.length > 0 ? Math.max(...allRequests.map(r => r.id)) + 1 : 1001;
-                
-                const newRequest = {
-                    id: newId,
-                    nationalId: nationalId,
-                    applicantName: applicantName,
-                    requestTitle: requestTitle,
-                    requestSummary: requestSummary,
-                    requestDate: new Date().toISOString().split('T')[0],
-                    category: category,
-                    status: 'submitted',
-                    file: null,
-                    comments: '',
-                    priority: priority,
-                    createdAt: new Date().toISOString(),
-                    createdBy: currentUser ? currentUser.username : 'system'
-                };
-                
-                allRequests.unshift(newRequest);
-                saveDataToLocalStorage();
-                
-                $('#newRequestModal').modal('hide');
-                showNotification('تم إضافة الطلب بنجاح (محلياً)', 'warning');
-                refreshData();
-            }
+            if (error) throw error;
+            console.log('Request saved to Supabase with ID:', data.id);
+            return data.id;
         }
+    } catch (error) {
+        console.error('Error saving to Supabase:', error);
+        throw error;
+    }
+}
 
         // عرض تفاصيل الطلب
         function showRequestDetails(requestId) {
@@ -3608,6 +3675,9 @@ pageRequests.forEach((request, index) => {
             
             $('body').append(modalHtml);
             $('#requestDetailsModal').modal('show');
+			 $('#requestDetailsModal').on('click', '#updateRequestBtn', function() {
+        updateRequestDetails($(this).data('request-id'));
+    });
             
             // تنظيف النموذج بعد الإغلاق
             $('#requestDetailsModal').on('hidden.bs.modal', function() {
@@ -3615,139 +3685,143 @@ pageRequests.forEach((request, index) => {
             });
         }
 
-        // تحديث تفاصيل الطلب
-        async function updateRequestDetails(requestId) {
-            const requestIndex = allRequests.findIndex(r => r.id === requestId);
-            if (requestIndex === -1) return;
-            
-            const newComments = $('#updateComments').val().trim();
-            const newStatus = $('#updateStatus').val();
-            
-            try {
-                // تحديث في Supabase إذا كان الاتصال متاحاً
-                if (isOnline && supabase) {
-                    const { error } = await window.supabase 
-                        .from('requests')
-                        .update({
-                            comments: newComments,
-                            status: newStatus,
-                            updated_at: new Date().toISOString(),
-                            updated_by: currentUser ? currentUser.username : 'system'
-                        })
-                        .eq('id', requestId);
+     
+// تحديث تفاصيل الطلب
+async function updateRequestDetails(requestId) {
+    const newComments = $('#updateComments').val().trim();
+    const newStatus = $('#updateStatus').val();
+    
+    try {
+        // تحديث الطلب في قاعدة البيانات
+        const { error } = await supabase
+            .from('citizen_requests')
+            .update({
+                comments: newComments,
+                status: newStatus,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', requestId);
+        
+        if (error) throw error;
+        
+        // إغلاق المودال
+        $('#requestDetailsModal').modal('hide');
+        
+        // عرض رسالة نجاح
+        showNotification('تم تحديث حالة الطلب بنجاح', 'success');
+        
+        // ============================================
+        // استخدام دالة التحديث المركزية
+        // ============================================
+        await updateMainPage();
+        
+        // إضافة للأنشطة
+        addActivity('تحديث طلب', `تم تحديث حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
+        
+    } catch (error) {
+        console.error('Error updating request:', error);
+        showNotification('فشل تحديث الطلب. تحقق من اتصال الإنترنت', 'error');
+    }
+}
 
-                    if (error) throw error;
-                    
-                    console.log('Request updated in Supabase with ID:', requestId);
-                }
-                
-                // تحديث محلياً
-                allRequests[requestIndex].comments = newComments;
-                allRequests[requestIndex].status = newStatus;
-                allRequests[requestIndex].updatedAt = new Date().toISOString();
-                allRequests[requestIndex].updatedBy = currentUser ? currentUser.username : 'system';
-                
-                saveDataToLocalStorage();
-                $('#requestDetailsModal').modal('hide');
-                
-                if (isOnline) {
-                    showNotification('تم تحديث حالة الطلب بنجاح في قاعدة البيانات', 'success');
-                } else {
-                    showNotification('تم تحديث حالة الطلب (محلياً)', 'warning');
-                }
-                
-                refreshData();
-                addActivity('تحديث طلب', `تم تحديث حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
-
-            } catch (error) {
-                console.error('Error updating request:', error);
-                
-                // تحديث محلي فقط
-                allRequests[requestIndex].comments = newComments;
-                allRequests[requestIndex].status = newStatus;
-                allRequests[requestIndex].updatedAt = new Date().toISOString();
-                allRequests[requestIndex].updatedBy = currentUser ? currentUser.username : 'system';
-                
-                saveDataToLocalStorage();
-                $('#requestDetailsModal').modal('hide');
-                showNotification('تم تحديث حالة الطلب (محلياً فقط)', 'warning');
-                refreshData();
-            }
+// تحديث الصفحة الرئيسية بالكامل
+async function updateMainPage() {
+    try {
+        // إعادة تحميل البيانات
+        await loadRequestsFromSupabase();
+        
+        // تحديث جميع العناصر
+        $('#requestsTableBody').html(''); // مسح الجدول
+        if (typeof renderRequestsTable === 'function') {
+            renderRequestsTable();
         }
-
-        // تحديث حالة الطلب مباشرة
-        async function updateRequestStatus(requestId, newStatus) {
-            const requestIndex = allRequests.findIndex(r => r.id === requestId);
-            if (requestIndex === -1) return;
-            
-            try {
-                // تحديث في Supabase إذا كان الاتصال متاحاً
-                if (isOnline && supabase) {
-                    const { error } = await window.supabase 
-                        .from('requests')
-                        .update({
-                            status: newStatus,
-                            updated_at: new Date().toISOString(),
-                            updated_by: currentUser ? currentUser.username : 'system'
-                        })
-                        .eq('id', requestId);
-
-                    if (error) throw error;
-                }
-                
-                // تحديث محلياً
-                allRequests[requestIndex].status = newStatus;
-                allRequests[requestIndex].updatedAt = new Date().toISOString();
-                allRequests[requestIndex].updatedBy = currentUser ? currentUser.username : 'system';
-                
-                saveDataToLocalStorage();
-                
-                if (isOnline) {
-                    showNotification(`تم تحديث حالة الطلب إلى ${statuses[newStatus].name} في قاعدة البيانات`, 'success');
-                } else {
-                    showNotification(`تم تحديث حالة الطلب إلى ${statuses[newStatus].name} (محلياً)`, 'warning');
-                }
-                
-                refreshData();
-                addActivity('تغيير حالة', `تم تغيير حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
-
-            } catch (error) {
-                console.error('Error updating status:', error);
-                
-                // تحديث محلي فقط
-                allRequests[requestIndex].status = newStatus;
-                allRequests[requestIndex].updatedAt = new Date().toISOString();
-                allRequests[requestIndex].updatedBy = currentUser ? currentUser.username : 'system';
-                
-                saveDataToLocalStorage();
-                showNotification(`تم تحديث حالة الطلب إلى ${statuses[newStatus].name} (محلياً فقط)`, 'warning');
-                refreshData();
-            }
+        
+        if (typeof renderCategoriesGrid === 'function') {
+            renderCategoriesGrid();
         }
-
+        
+        if (typeof renderCategoryStatistics === 'function') {
+            renderCategoryStatistics();
+        }
+        
+        if (typeof renderCategoryChart === 'function') {
+            renderCategoryChart();
+        }
+        
+        if (typeof loadUrgentRequests === 'function') {
+            loadUrgentRequests();
+        }
+        
+        console.log('تم تحديث الصفحة الرئيسية');
+    } catch (error) {
+        console.error('خطأ في تحديث الصفحة:', error);
+    }
+}
+// تحديث حالة الطلب
+async function updateRequestStatus(requestId, newStatus) {
+    try {
+        // تحديث الطلب في قاعدة البيانات
+        const { error } = await supabase
+            .from('citizen_requests')
+            .update({
+                status: newStatus,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', requestId);
+        
+        if (error) throw error;
+        
+        // عرض رسالة نجاح
+        showNotification(`تم تحديث حالة الطلب إلى ${statuses[newStatus].name}`, 'success');
+        
+        // ============================================
+        // استخدام دالة التحديث المركزية
+        // ============================================
+        await updateMainPage();
+        
+        // إضافة للأنشطة
+        addActivity('تغيير حالة', `تم تغيير حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
+        
+    } catch (error) {
+        console.error('Error updating status:', error);
+        showNotification('فشل تحديث الحالة. تحقق من اتصال الإنترنت', 'error');
+    }
+}
         // تعديل الطلب
         function editRequest(requestId) {
             showRequestDetails(requestId);
         }
 
         // تحديث البيانات
-        function refreshData() {
-    // التحقق من وجود بيانات
-    if (!allRequests) {
-        console.warn('No data to refresh');
-        return;
+    // تحديث عرض البيانات في الصفحة
+function refreshData() {
+    // تحديث جدول الطلبات
+    if (typeof renderRequestsTable === 'function') {
+        renderRequestsTable();
     }
-            renderRequestsTable();
-            updateStatistics();
-            renderCategoryChart();
-            loadUrgentRequests();
-            updateActiveFiltersDisplay();
-            
-            // تحديث المخططات الأخرى إذا كانت موجودة
-            if (monthlyChart) {
-                updateMonthlyChart();
-            }
-        }
+    
+    // تحديث عرض الهيئات
+    if (typeof renderCategoriesGrid === 'function') {
+        renderCategoriesGrid();
+    }
+    
+    // تحديث الإحصائيات
+    if (typeof renderCategoryStatistics === 'function') {
+        renderCategoryStatistics();
+    }
+    
+    // تحديث الرسوم البيانية
+    if (typeof renderCategoryChart === 'function') {
+        renderCategoryChart();
+    }
+    
+    // تحديث الطلبات العاجلة
+    if (typeof loadUrgentRequests === 'function') {
+        loadUrgentRequests();
+    }
+    
+    console.log('تم تحديث عرض البيانات');
+}
 
         // تصدير البيانات
         function exportData() {
@@ -4407,123 +4481,177 @@ pageRequests.forEach((request, index) => {
         }
 
         // حفظ المستخدم الجديد
-        async function saveNewUser() {
-            const fullName = $('#newUserFullName').val().trim();
-            const username = $('#newUserUsername').val().trim();
-            const email = $('#newUserEmail').val().trim();
-            const phone = $('#newUserPhone').val().trim();
-            const password = $('#newUserPassword').val();
-            const confirmPassword = $('#newUserConfirmPassword').val();
-            const role = $('#newUserRole').val();
-            const status = $('#newUserStatus').val();
-            const isActive = status === 'active';
-            
-            // التحقق من البيانات
-            if (!fullName || !username || !email || !password || !confirmPassword) {
-                showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
-                return;
-            }
-            
-            if (password !== confirmPassword) {
-                showNotification('كلمات المرور غير متطابقة', 'error');
-                return;
-            }
-            
-            // التحقق من عدم تكرار اسم المستخدم
-            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
-            const isUsernameTaken = users.some(user => user.username === username);
-            
-            if (isUsernameTaken) {
-                showNotification('اسم المستخدم مستخدم مسبقاً', 'error');
-                return;
-            }
-            
-            try {
-                // محاولة الحفظ في Supabase
-                let newUserId;
-                if (isOnline && supabase) {
-                    const { data, error } = await window.supabase 
-                        .from('users')
-                        .insert([{
-                            username: username,
-                            password_hash: password,
-                            full_name: fullName,
-                            email: email,
-                            phone: phone,
-                            role: role,
-                            is_active: isActive
-                        }])
-                        .select()
-                        .single();
+		// حفظ مستخدم جديد
+async function saveNewUser() {
+    const fullName = $('#newUserFullName').val().trim();
+    const username = $('#newUserUsername').val().trim();
+    const email = $('#newUserEmail').val().trim();
+    const phone = $('#newUserPhone').val().trim();
+    const password = $('#newUserPassword').val();
+    const role = $('#newUserRole').val();
+    const status = $('#newUserStatus').val();
+    const isActive = status === 'active';
+    
+    // التحقق من البيانات
+    if (!fullName || !username || !password || !role) {
+        showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
+        return;
+    }
+    
+    try {
+        // حفظ المستخدم في قاعدة البيانات
+        const { data, error } = await supabase
+            .from('users')
+            .insert([{
+                username: username,
+                password_hash: password,
+                full_name: fullName,
+                email: email,
+                phone: phone,
+                role: role,
+                is_active: isActive,
+                created_at: new Date().toISOString()
+            }])
+            .select()
+            .single();
+        
+        if (error) throw error;
+        
+        // إغلاق المودال
+        $('#addUserModal').modal('hide');
+        
+        // عرض رسالة نجاح
+        showNotification('تم إضافة المستخدم بنجاح', 'success');
+        
+        // تحديث البيانات الرئيسية فوراً
+        await loadUsersFromSupabase();
+        loadUsers();
+        
+        // إضافة للأنشطة
+        addActivity('مستخدم جديد', `تم إضافة مستخدم جديد ${fullName}`);
+        
+    } catch (error) {
+        console.error('Error saving user:', error);
+        showNotification('فشل إضافة المستخدم. تحقق من اتصال الإنترنت', 'error');
+    }
+}
 
-                    if (error) throw error;
-                    
-                    newUserId = data.id;
-                    console.log('User saved to Supabase with ID:', newUserId);
-                } else {
-                    // توليد ID محلياً
-                    newUserId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
-                    console.log('Saving user locally with ID:', newUserId);
-                }
-                
-                // إنشاء مستخدم جديد للبيانات المحلية
-                const newUser = {
-                    id: newUserId,
-                    username: username,
-                    password: password,
-                    fullName: fullName,
-                    email: email,
-                    phone: phone,
-                    role: role,
-                    isActive: isActive,
-                    createdAt: new Date().toISOString(),
-                    lastLogin: null
-                };
-                
-                users.push(newUser);
-                localStorage.setItem('systemUsers', JSON.stringify(users));
-                
-                $('#addUserModal').modal('hide');
-                
-                if (isOnline) {
-                    showNotification('تم إضافة المستخدم بنجاح إلى قاعدة البيانات', 'success');
-                } else {
-                    showNotification('تم إضافة المستخدم بنجاح (محلياً)', 'warning');
-                }
-                
-                // تحديث قائمة المستخدمين
-                loadUsers();
-                
-                // إضافة للنشاطات
-                addActivity('مستخدم جديد', `تم إضافة مستخدم جديد ${fullName} بواسطة ${currentUser.fullName}`);
-                
-            } catch (error) {
-                console.error('Error saving user:', error);
-                showNotification('حدث خطأ أثناء حفظ المستخدم. تم الحفظ محلياً فقط.', 'error');
-                
-                // حفظ محلي كنسخة احتياطية
-                const newUserId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
-                const newUser = {
-                    id: newUserId,
-                    username: username,
-                    password: password,
-                    fullName: fullName,
-                    email: email,
-                    phone: phone,
-                    role: role,
-                    isActive: isActive,
-                    createdAt: new Date().toISOString(),
-                    lastLogin: null
-                };
-                
-                users.push(newUser);
-                localStorage.setItem('systemUsers', JSON.stringify(users));
-                
-                $('#addUserModal').modal('hide');
-                showNotification('تم إضافة المستخدم بنجاح (محلياً)', 'warning');
-                loadUsers();
-            }
+
+// Update updateUser
+// تحديث المستخدم
+async function updateUser(userId) {
+    const fullName = $('#editUserFullName').val().trim();
+    const username = $('#editUserUsername').val().trim();
+    const email = $('#editUserEmail').val().trim();
+    const phone = $('#editUserPhone').val().trim();
+    const password = $('#editUserPassword').val();
+    const role = $('#editUserRole').val();
+    const status = $('#editUserStatus').val();
+    const isActive = status === 'active';
+    
+    // التحقق من البيانات
+    if (!fullName || !username || !role) {
+        showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
+        return;
+    }
+    
+    try {
+        const updateData = {
+            full_name: fullName,
+            username: username,
+            email: email,
+            phone: phone,
+            role: role,
+            is_active: isActive,
+            updated_at: new Date().toISOString()
+        };
+        
+        if (password) {
+            updateData.password_hash = password;
         }
+        
+        // تحديث المستخدم في قاعدة البيانات
+        const { error } = await supabase
+            .from('users')
+            .update(updateData)
+            .eq('id', userId);
+        
+        if (error) throw error;
+        
+        // إغلاق المودال
+        $('#editUserModal').modal('hide');
+        
+        // عرض رسالة نجاح
+        showNotification('تم تحديث بيانات المستخدم بنجاح', 'success');
+        
+        // تحديث البيانات الرئيسية فوراً
+        await loadUsersFromSupabase();
+        loadUsers();
+        
+        // إضافة للأنشطة
+        addActivity('تحديث مستخدم', `تم تحديث بيانات المستخدم ${fullName}`);
+        
+    } catch (error) {
+        console.error('Error updating user:', error);
+        showNotification('فشل تحديث المستخدم. تحقق من اتصال الإنترنت', 'error');
+    }
+}
+
+// Update toggleUserStatus
+async function toggleUserStatus(userId, newStatus) {
+    try {
+        const { error } = await supabase
+            .from('users')
+            .update({
+                is_active: newStatus,
+                updated_at: new Date().toISOString(),
+                updated_by: currentUser.username
+            })
+            .eq('id', userId);
+        
+        if (error) throw error;
+        
+        await loadUsersFromSupabase();
+        showNotification(`تم ${newStatus ? 'تفعيل' : 'تعطيل'} حساب المستخدم بنجاح`, 'success');
+        loadUsers();
+        addActivity('تغيير حالة مستخدم', `تم ${newStatus ? 'تفعيل' : 'تعطيل'} حساب المستخدم`);
+    } catch (error) {
+        console.error('Error toggling user status:', error);
+        showNotification('فشل تغيير الحالة. تحقق من اتصال الإنترنت', 'error');
+    }
+}
+
+// حذف الطلب
+async function deleteRequest(requestId) {
+    if (!confirm('هل أنت متأكد من حذف هذا الطلب؟')) {
+        return;
+    }
+    
+    try {
+        // حذف الطلب من قاعدة البيانات
+        const { error } = await supabase
+            .from('citizen_requests')
+            .delete()
+            .eq('id', requestId);
+        
+        if (error) throw error;
+        
+        // عرض رسالة نجاح
+        showNotification('تم حذف الطلب بنجاح', 'success');
+        
+        // ============================================
+        // استخدام دالة التحديث المركزية
+        // ============================================
+        await updateMainPage();
+        
+        // إضافة للأنشطة
+        addActivity('حذف طلب', `تم حذف الطلب #${requestId}`);
+        
+    } catch (error) {
+        console.error('Error deleting request:', error);
+        showNotification('فشل حذف الطلب. تحقق من اتصال الإنترنت', 'error');
+    }
+}
 
         // تعديل مستخدم
         function editUser(userId) {
@@ -5008,137 +5136,47 @@ pageRequests.forEach((request, index) => {
         }
 
         // حفظ تغييرات الملف الشخصي
-        async function saveProfileChanges() {
-            if (!currentUser) return;
-            
-            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
-            const userIndex = users.findIndex(u => u.id === currentUser.id);
-            
-            if (userIndex === -1) {
-                showNotification('المستخدم غير موجود', 'error');
-                return;
-            }
-            
-            const fullName = $('#profileFullNameInput').val().trim();
-            const email = $('#profileEmail').val().trim();
-            const phone = $('#profilePhone').val().trim();
-            const currentPassword = $('#currentPassword').val();
-            const newPassword = $('#newPassword').val();
-            const confirmNewPassword = $('#confirmNewPassword').val();
-            
-            // التحقق من البيانات
-            if (!fullName || !email) {
-                showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
-                return;
-            }
-            
-            // التحقق من كلمة المرور الحالية إذا تم إدخال كلمة مرور جديدة
-            if (newPassword) {
-                if (!currentPassword) {
-                    showNotification('الرجاء إدخال كلمة المرور الحالية', 'error');
-                    return;
-                }
-                
-                if (currentPassword !== users[userIndex].password) {
-                    showNotification('كلمة المرور الحالية غير صحيحة', 'error');
-                    return;
-                }
-                
-                if (newPassword !== confirmNewPassword) {
-                    showNotification('كلمات المرور الجديدة غير متطابقة', 'error');
-                    return;
-                }
-                
-                if (newPassword.length < 6) {
-                    showNotification('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
-                    return;
-                }
-                
-                users[userIndex].password = newPassword;
-            }
-            
-            try {
-                // تحديث في Supabase إذا كان الاتصال متاحاً
-                if (isOnline && supabase) {
-                    const updateData = {
-                        full_name: fullName,
-                        email: email,
-                        phone: phone
-                    };
-                    
-                    // إذا تم إدخال كلمة مرور جديدة، أضفها
-                    if (newPassword) {
-                        updateData.password_hash = newPassword;
-                    }
-                    
-                    const { error } = await supabase
-                        .from('users')
-                        .update(updateData)
-                        .eq('id', currentUser.id);
-
-                    if (error) throw error;
-                    console.log('Profile updated in Supabase for user:', currentUser.id);
-                }
-                
-                // تحديث بيانات المستخدم محلياً
-                users[userIndex].fullName = fullName;
-                users[userIndex].email = email;
-                users[userIndex].phone = phone;
-                if (newPassword) {
-                    users[userIndex].password = newPassword;
-                }
-                users[userIndex].updatedAt = new Date().toISOString();
-                
-                localStorage.setItem('systemUsers', JSON.stringify(users));
-                
-                // تحديث بيانات الجلسة الحالية
-                currentUser.fullName = fullName;
-                currentUser.email = email;
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                
-                // تحديث واجهة المستخدم
-                updateUserInterface();
-                
-                if (isOnline) {
-                    showNotification('تم تحديث بياناتك الشخصية بنجاح في قاعدة البيانات', 'success');
-                } else {
-                    showNotification('تم تحديث بياناتك الشخصية بنجاح (محلياً)', 'warning');
-                }
-                
-                // إعادة تعيين حقول كلمات المرور
-                $('#currentPassword').val('');
-                $('#newPassword').val('');
-                $('#confirmNewPassword').val('');
-                
-                // إضافة للنشاطات
-                addActivity('تحديث الملف الشخصي', `تم تحديث بيانات الملف الشخصي بواسطة ${fullName}`);
-                
-            } catch (error) {
-                console.error('Error updating profile:', error);
-                showNotification('حدث خطأ أثناء تحديث الملف الشخصي. تم التحديث محلياً فقط.', 'error');
-                
-                // تحديث محلي فقط
-                users[userIndex].fullName = fullName;
-                users[userIndex].email = email;
-                users[userIndex].phone = phone;
-                if (newPassword) {
-                    users[userIndex].password = newPassword;
-                }
-                users[userIndex].updatedAt = new Date().toISOString();
-                
-                localStorage.setItem('systemUsers', JSON.stringify(users));
-                currentUser.fullName = fullName;
-                currentUser.email = email;
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                updateUserInterface();
-                
-                $('#currentPassword').val('');
-                $('#newPassword').val('');
-                $('#confirmNewPassword').val('');
-                
-                showNotification('تم تحديث بياناتك الشخصية (محلياً فقط)', 'warning');
-            }
+		async function saveProfileChanges() {
+    // ... validation
+    
+    try {
+        const updateData = {
+            full_name: fullName,
+            email: email,
+            phone: phone,
+            updated_at: new Date().toISOString()
+        };
+        
+        if (newPassword) {
+            updateData.password_hash = newPassword;
         }
+        
+        const { error } = await supabase
+            .from('users')
+            .update(updateData)
+            .eq('id', currentUser.id);
+        
+        if (error) throw error;
+        
+        // Update local currentUser
+        currentUser.fullName = fullName;
+        currentUser.email = email;
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        
+        updateUserInterface();
+        showNotification('تم تحديث بياناتك الشخصية بنجاح', 'success');
+        
+        // Reset password fields
+        $('#currentPassword').val('');
+        $('#newPassword').val('');
+        $('#confirmNewPassword').val('');
+        
+        addActivity('تحديث الملف الشخصي', `تم تحديث بيانات الملف الشخصي`);
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        showNotification('فشل تحديث الملف الشخصي. تحقق من اتصال الإنترنت', 'error');
+    }
+}
 
         // تعريف الدوال للاستخدام العام
         window.getRoleName = getRoleName;
@@ -5167,8 +5205,24 @@ pageRequests.forEach((request, index) => {
             // تسجيل رسالة نجاح التحميل
             console.log('تم تحميل نظام متابعة طلبات المواطنين بنجاح مع دعم Supabase');
         });
+		// تعريف الدوال للاستخدام العام
+window.getRoleName = getRoleName;
+window.getUserIconByRole = getUserIconByRole;
+window.showRequestDetails = showRequestDetails;
+window.updateRequestStatus = updateRequestStatus;
+window.editRequest = editRequest;
+window.selectSearchResult = selectSearchResult;
+window.showCategoryDetails = showCategoryDetails;
+window.showAllCategoryRequests = showAllCategoryRequests;
+window.editUser = editUser;
+window.toggleUserStatus = toggleUserStatus;
+window.deleteUser = deleteUser;
+window.updateUser = updateUser;
+window.saveNewRequest = saveNewRequest; // إضافة هذه السطر
+window.updateRequestDetails = updateRequestDetails; // إضافة هذه السطر
     </script>
 </body>
 
 </html>
+
 
