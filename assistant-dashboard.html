@@ -1509,63 +1509,77 @@ $(document).ready(async function() {
     
     // تعريف البيانات
     const categories = {
-        'electricity': {
-            name: 'كهرباء',
-            color: '#f97316',
-            bgColor: '#ffedd5',
-            icon: 'fas fa-bolt',
-            description: 'وزارة الكهرباء والطاقة المتجددة'
-        },
-        'health': {
-            name: 'صحة',
-            color: '#ec4899',
-            bgColor: '#fce7f3',
-            icon: 'fas fa-hospital',
-            description: 'وزارة الصحة والسكان'
-        },
-        'water': {
-            name: 'مياه',
-            color: '#0ea5e9',
-            bgColor: '#e0f2fe',
-            icon: 'fas fa-tint',
-            description: 'وزارة الموارد المائية والري'
-        },
-        'sanitation': {
-            name: 'صرف صحي',
-            color: '#8b5cf6',
-            bgColor: '#f3e8ff',
-            icon: 'fas fa-toilet',
-            description: 'وزارة الإسكان والمرافق والمجتمعات العمرانية'
-        },
-        'education': {
-            name: 'تعليم',
-            color: '#84cc16',
-            bgColor: '#f0fdf4',
-            icon: 'fas fa-graduation-cap',
-            description: 'وزارة التربية والتعليم'
-        },
-        'transport': {
-            name: 'مواصلات',
-            color: '#6366f1',
-            bgColor: '#eef2ff',
-            icon: 'fas fa-bus',
-            description: 'وزارة النقل'
-        },
-        'telecom': {
-            name: 'اتصالات',
-            color: '#06b6d4',
-            bgColor: '#ecfeff',
-            icon: 'fas fa-wifi',
-            description: 'وزارة الاتصالات وتكنولوجيا المعلومات'
-        },
-        'housing': {
-            name: 'إسكان',
-            color: '#14b8a6',
-            bgColor: '#f0fdfa',
-            icon: 'fas fa-home',
-            description: 'وزارة الإسكان والمرافق والمجتمعات العمرانية'
-        }
-    };
+  'رئاسة مجلس الوزراء': {
+    name: 'رئاسة مجلس الوزراء',
+    color: '#f97316',
+    bgColor: '#ffedd5',
+    icon: 'fas fa-landmark', // ✅ أيقونة صحيحة
+    description: 'رئاسة مجلس الوزراء'
+  },
+  'الدفاع': {
+    name: 'الدفاع',
+    color: '#ec4899',
+    bgColor: '#fce7f3',
+    icon: 'fas fa-shield-alt', // ✅ أيقونة دفاع
+    description: 'وزارة الدفاع والإنتاج الحربي'
+  },
+  'الكهرباء والطاقة': {
+    name: 'الكهرباء والطاقة',
+    color: '#0ea5e9',
+    bgColor: '#e0f2fe',
+    icon: 'fas fa-bolt', // ✅ أيقونة كهرباء
+    description: 'وزارة الكهرباء والطاقة المتجددة'
+  },
+  'الخارجية': {
+    name: 'الخارجية',
+    color: '#8b5cf6',
+    bgColor: '#f3e8ff',
+    icon: 'fas fa-globe', // ✅ أيقونة علاقات خارجية
+    description: 'وزارة الخارجية'
+  },
+  'البيئة': {
+    name: 'البيئة',
+    color: '#84cc16',
+    bgColor: '#f0fdf4',
+    icon: 'fas fa-leaf', // ✅ أيقونة بيئة
+    description: 'وزارة البيئة'
+  },
+  'الاتصالات': { // ⚠️ ملاحظة: تم تصحيح كتابة "الإتصالات" إلى "الاتصالات" (بدون همزة قطع)
+    name: 'الاتصالات',
+    color: '#6366f1',
+    bgColor: '#eef2ff',
+    icon: 'fas fa-satellite', // ✅ أيقونة اتصالات
+    description: 'وزارة الاتصالات وتكنولوجيا المعلومات'
+  },
+  'التربية والتعليم': {
+    name: 'التربية والتعليم',
+    color: '#06b6d4',
+    bgColor: '#ecfeff',
+    icon: 'fas fa-graduation-cap', // ✅ أيقونة تعليم
+    description: 'وزارة التربية والتعليم'
+  },
+  'القوى العاملة': {
+    name: 'القوى العاملة',
+    color: '#14b8a6',
+    bgColor: '#f0fdfa',
+    icon: 'fas fa-briefcase', // ✅ أيقونة عمل
+    description: 'وزارة القوى العاملة'
+  },
+'العدل': { // ⚠️ ملاحظة: تم تصحيح كتابة "الإتصالات" إلى "الاتصالات" (بدون همزة قطع)
+name: 'العدل',
+color: '#6366f1',
+bgColor: '#eef2ff',
+icon: 'fas fa-satellite', // ✅ أيقونة اتصالات
+description: 'وزارة العدل'
+},
+  'التنمية المحلية': { // ⚠️ ملاحظة: تم تصحيح كتابة "الإتصالات" إلى "الاتصالات" (بدون همزة قطع)
+    name: 'التنمية المحلية',
+    color: '#6366f1',
+    bgColor: '#eef2ff',
+    icon: 'fas fa-satellite', // ✅ أيقونة اتصالات
+    description:  'وزارة التنمية المحلية'
+  },
+};
 
     const statuses = {
         'submitted': {
