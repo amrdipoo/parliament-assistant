@@ -429,6 +429,12 @@
                         <span>الهيئات الحكومية</span>
                     </a>
                 </li>
+				<li class="nav-item">
+					<a class="nav-link" href="#" id="statusLink">
+				<i class="fas fa-check-circle"></i>
+					<span>حالة الطلب</span>
+					</a>
+</li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="reportsLink">
                         <i class="fas fa-chart-bar"></i>
@@ -1272,6 +1278,75 @@
         </div>
     </div>
 </div>
+<!-- صفحة حالة الطلب -->
+<div id="statusSection" class="page-section" style="display: none;">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-check-circle me-2"></i>حالة الطلبات
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- شريط البحث والفلاتر -->
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-2">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" class="form-control" id="statusSearchInput" 
+                                       placeholder="ابحث بالرقم القومي أو الاسم...">
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <select class="form-select" id="statusFilterSelect">
+                                <option value="">كل الحالات</option>
+                                <option value="submitted">تم التقديم</option>
+                                <option value="pending">انتظار الرد</option>
+                                <option value="approved">موافقة</option>
+                                <option value="rejected">غير موافقة</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <button class="btn btn-primary w-100" id="refreshStatusBtn">
+                                <i class="fas fa-redo me-2"></i>تحديث
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- جدول حالة الطلبات -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th width="50">#</th>
+                                    <th width="140">الرقم القومي</th>
+                                    <th width="120">رقم الهاتف</th>
+                                    <th>اسم المواطن</th>
+                                    <th>عنوان الطلب</th>
+                                    <th width="120">حالة الطلب</th>
+                                    <th width="100">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="statusTableBody">
+                                <!-- سيتم تعبئة البيانات ديناميكيًا -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- رسالة عدم وجود نتائج -->
+                    <div class="text-center py-5 d-none" id="noStatusResults">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">لا توجد طلبات</h5>
+                        <p class="text-muted">لا يوجد طلبات لعرض حالتها</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- صفحة الملف الشخصي -->
 <div id="profileSection" class="page-section" style="display: none;">
@@ -1579,7 +1654,77 @@ description: 'وزارة العدل'
     icon: 'fas fa-satellite', // ✅ أيقونة اتصالات
     description:  'وزارة التنمية المحلية'
   },
+
+  'الإسكان والمرافق': { // ⚠️ ملاحظة: تم تصحيح كتابة "الإتصالات" إلى "الاتصالات" (بدون همزة قطع)
+    name: 'الإسكان والمرافق',
+    color: '#6366f1',
+    bgColor: '#eef2ff',
+    icon: 'fas fa-satellite', // ✅ أيقونة اتصالات
+    description:  'الإسكان والمرافق والمجتمعات العمرانية'
+  },
+
+ 'الأوقاف': { // ⚠️ ملاحظة: تم تصحيح كتابة "الإتصالات" إلى "الاتصالات" (بدون همزة قطع)
+    name: 'الأوقاف',
+    color: '#6366f1',
+    bgColor: '#eef2ff',
+    icon: 'fas fa-satellite', // ✅ أيقونة اتصالات
+    description:  'وزارة الأوقاف'
+  },
+
+ 'الداخلية': { // ⚠️ ملاحظة: تم تصحيح كتابة "الإتصالات" إلى "الاتصالات" (بدون همزة قطع)
+    name: 'الداخلية',
+    color: '#6366f1',
+    bgColor: '#eef2ff',
+    icon: 'fas fa-satellite', // ✅ أيقونة اتصالات
+    description:  'وزارة الداخلية'
+  },
+
+ ' التجارة والصناعة': { // ⚠️ ملاحظة: تم تصحيح كتابة "الإتصالات" إلى "الاتصالات" (بدون همزة قطع)
+    name: ' التجارة والصناعة',
+    color: '#6366f1',
+    bgColor: '#eef2ff',
+    icon: 'fas fa-satellite', // ✅ أيقونة اتصالات
+    description:  'وزارة التجارة والصناعة'
+  },
+ 
+  
+   'المالية': { // ⚠️ ملاحظة: تم تصحيح كتابة "الإتصالات" إلى "الاتصالات" (بدون همزة قطع)
+    name: 'المالية',
+    color: '#6366f1',
+    bgColor: '#eef2ff',
+    icon: 'fas fa-satellite', // ✅ أيقونة اتصالات
+    description:  'وزارة المالية'
+  },
+   'الطيران المدنى': { // ⚠️ ملاحظة: تم تصحيح كتابة "الإتصالات" إلى "الاتصالات" (بدون همزة قطع)
+    name: 'الطيران المدنى',
+    color: '#6366f1',
+    bgColor: '#eef2ff',
+    icon: 'fas fa-satellite', // ✅ أيقونة اتصالات
+    description:  'وزارة الطيران المدنى'
+  },
+   'النقل': { // ⚠️ ملاحظة: تم تصحيح كتابة "الإتصالات" إلى "الاتصالات" (بدون همزة قطع)
+    name: 'النقل',
+    color: '#6366f1',
+    bgColor: '#eef2ff',
+    icon: 'fas fa-satellite', // ✅ أيقونة اتصالات
+    description:  'وزارة النقل'
+  },
+   'الثقافة': { // ⚠️ ملاحظة: تم تصحيح كتابة "الإتصالات" إلى "الاتصالات" (بدون همزة قطع)
+    name: 'الثقافة',
+    color: '#6366f1',
+    bgColor: '#eef2ff',
+    icon: 'fas fa-satellite', // ✅ أيقونة اتصالات
+    description:  'وزارة الثقافة'
+  },
+   ' الصحة والسكان': { // ⚠️ ملاحظة: تم تصحيح كتابة "الإتصالات" إلى "الاتصالات" (بدون همزة قطع)
+    name: ' الصحة والسكان',
+    color: '#6366f1',
+    bgColor: '#eef2ff',
+    icon: 'fas fa-satellite', // ✅ أيقونة اتصالات
+    description:  'وزارة الصحة والسكان'
+  },
 };
+
 
     const statuses = {
         'submitted': {
@@ -1757,6 +1902,7 @@ async function loadRequestsFromSupabase() {
                 id: item.id,
                 nationalId: item.national_id,
                 applicantName: item.applicant_name,
+				applicantPhone: item.phone || null,  
                 requestTitle: item.request_title,
                 requestSummary: item.request_summary,
                 requestDate: item.request_date,
@@ -1934,7 +2080,7 @@ async function loadRequestsFromSupabase() {
             initSettingsPage();
             initUsersPage();
             initProfilePage();
-            
+            initStatusPage();
             checkUnreadNotifications();
             setInterval(checkNewRequests, 30000);
             
@@ -2067,8 +2213,13 @@ async function loadRequestsFromSupabase() {
                     $('#searchResults').hide();
                 }
             });
-
-            $('#searchType').change(function() {
+			$('#statusLink').click(function(e) {
+				e.preventDefault();
+				$('.nav-link').removeClass('active');
+				$(this).addClass('active');
+				showPage('status');
+			});
+			$('#searchType').change(function() {
                 activeFilters.searchType = $(this).val();
                 performSearch();
             });
@@ -2139,6 +2290,12 @@ async function loadRequestsFromSupabase() {
                 const pageId = $(this).attr('id').replace('Link', '');
                 showPage(pageId);
             });
+			$('#statusLink').click(function(e) {
+				e.preventDefault();
+				$('.nav-link').removeClass('active');
+				$(this).addClass('active');
+				showPage('status');
+			});
         }
 
         // دالة مزامنة البيانات مع Supabase
@@ -2942,7 +3099,84 @@ pageRequests.forEach((request, index) => {
             tableBody.html(html);
             renderPagination();
         }
-
+		
+		// إضافة هذه الدالة بعد دوال العرض الأخرى
+function renderStatusTable() {
+    const searchTerm = $('#statusSearchInput').val().toLowerCase().trim();
+    const statusFilter = $('#statusFilterSelect').val();
+    
+    let filteredRequests = [...allRequests];
+    
+    // تطبيق البحث
+    if (searchTerm) {
+        filteredRequests = filteredRequests.filter(request => 
+            request.nationalId.includes(searchTerm) ||
+            request.applicantName.toLowerCase().includes(searchTerm) ||
+            (request.applicantPhone && request.applicantPhone.includes(searchTerm))
+        );
+    }
+    
+    // تطبيق فلتر الحالة
+    if (statusFilter) {
+        filteredRequests = filteredRequests.filter(request => 
+            request.status === statusFilter
+        );
+    }
+    
+    const tableBody = $('#statusTableBody');
+    const noResults = $('#noStatusResults');
+    
+    if (filteredRequests.length === 0) {
+        tableBody.html('');
+        noResults.removeClass('d-none');
+        return;
+    }
+    
+    noResults.addClass('d-none');
+    let html = '';
+    
+    filteredRequests.forEach((request, index) => {
+        const status = statuses[request.status];
+        const rowNumber = index + 1;
+        
+        html += `
+        <tr>
+            <td class="fw-bold">${rowNumber}</td>
+            <td>${request.nationalId}</td>
+            <td>
+                ${request.applicantPhone ? 
+                    `<span class="badge bg-success">
+                        <i class="fas fa-phone me-1"></i>${request.applicantPhone}
+                    </span>` : 
+                    '<span class="text-muted">غير متوفر</span>'}
+            </td>
+            <td>
+                <div class="fw-bold">${request.applicantName}</div>
+                <small class="text-muted">طلب #${request.id}</small>
+            </td>
+            <td>${request.requestTitle}</td>
+            <td>
+                <span class="status-badge ${getStatusClass(request.status)}">
+                    <i class="${status.icon} me-1"></i>${status.name}
+                </span>
+            </td>
+            <td>
+                ${request.applicantPhone ? `
+                <button class="btn btn-sm btn-success w-100" 
+                        onclick="sendWhatsAppStatus(${request.id})" 
+                        title="إرسال حالة الطلب">
+                    <i class="fab fa-whatsapp me-1"></i>إرسال
+                </button>` : `
+                <button class="btn btn-sm btn-secondary w-100" disabled>
+                    <i class="fas fa-ban me-1"></i>لا يوجد رقم
+                </button>`}
+            </td>
+        </tr>
+        `;
+    });
+    
+    tableBody.html(html);
+}
         // عرض الترقيم
         function renderPagination() {
             const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
@@ -3123,7 +3357,63 @@ pageRequests.forEach((request, index) => {
             $('#newChange').html(`<i class="fas fa-arrow-up me-1"></i>${Math.floor(Math.random() * 15)}%`);
             $('#pendingChange').html(`<i class="fas fa-arrow-down me-1"></i>${Math.floor(Math.random() * 10)}%`);
         }
-
+		// إضافة هذه الدالة بعد دوال الإشعارات
+function sendWhatsAppStatus(requestId) {
+    const request = allRequests.find(r => r.id === requestId);
+    if (!request) return;
+    
+    if (!request.applicantPhone) {
+        showNotification('لا يوجد رقم هاتف مسجل لهذا الطلب', 'error');
+        return;
+    }
+    
+    // الحصول على حالة الطلب
+    const status = statuses[request.status];
+    let statusMessage = '';
+    
+    switch(request.status) {
+        case 'submitted':
+            statusMessage = 'تم استلام طلبك وسنقوم بمراجعته قريباً';
+            break;
+        case 'pending':
+            statusMessage = 'طلبك قيد الانتظار والمراجعة حالياً';
+            break;
+        case 'approved':
+            statusMessage = 'تم الموافقة على طلبك بنجاح ✅';
+            break;
+        case 'rejected':
+            statusMessage = 'نأسف لإبلاغك بأنه تم رفض طلبك ❌';
+            break;
+        default:
+            statusMessage = 'تم تحديث حالة طلبك';
+    }
+    
+    // إنشاء رسالة واتساب
+    const message = `*تحديث حالة طلبك*\n\n` +
+                   `👤 *اسم مقدم الطلب:* ${request.applicantName}\n` +
+                   `🆔 *الرقم القومي:* ${request.nationalId}\n` +
+                   `📝 *عنوان الطلب:* ${request.requestTitle}\n\n` +
+                   `📊 *الحالة الحالية:* ${status.name}\n` +
+                   `💬 ${statusMessage}\n\n` +
+                   `📞 *للاستفسار:* يرجى التواصل مع مكتب عضو مجلس النواب\n` +
+                   `📅 *تاريخ الطلب:* ${formatDate(request.requestDate)}`;
+    
+    // تنظيف رقم الهاتف (إزالة الأصفار والمسافات)
+    const cleanPhone = request.applicantPhone.replace(/[^0-9]/g, '');
+    const whatsappNumber = cleanPhone.startsWith('0') ? 
+                           '20' + cleanPhone.substring(1) : 
+                           cleanPhone;
+    
+    // فتح واتساب
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    
+    window.open(whatsappUrl, '_blank');
+    
+    // إضافة للأنشطة
+    addActivity('إرسال واتساب', `تم إرسال حالة الطلب #${requestId} لـ ${request.applicantName}`);
+    
+    showNotification('تم فتح واتساب لإرسال الرسالة', 'success');
+}
         // إنشاء مخطط الفئات
         function renderCategoryChart() {
             const ctx = document.getElementById('categoryChart');
@@ -3257,6 +3547,7 @@ async function saveNewRequest() {
     
     const nationalId = $('#newNationalId').val().trim();
     const applicantName = $('#newApplicantName').val().trim();
+	const applicantPhone = $('#newApplicantPhone').val().trim();
     const category = $('#newCategory').val();
     const priority = $('#newPriority').val();
     const requestTitle = $('#newRequestTitle').val().trim();
@@ -3284,6 +3575,7 @@ async function saveNewRequest() {
         const newRequestId = await saveRequestToSupabase({
             nationalId: nationalId,
             applicantName: applicantName,
+			applicantPhone: applicantPhone, 
             requestTitle: requestTitle,
             requestSummary: requestSummary,
             requestDate: new Date().toISOString().split('T')[0],
@@ -3402,6 +3694,14 @@ function openNewRequestModal() {
                                 </label>
                                 <input type="text" class="form-control" id="newApplicantName" required>
                             </div>
+							<div class="col-md-6">
+								<label for="newApplicantPhone" class="form-label fw-bold">
+									<i class="fas fa-phone me-2"></i>رقم الهاتف (واتساب)
+								</label>
+								<input type="tel" class="form-control" id="newApplicantPhone" 
+									   placeholder="010xxxxxxxx" maxlength="11">
+								<div class="form-text">سيتم استخدامه لإرسال تحديثات الحالة</div>
+							</div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
@@ -3491,6 +3791,7 @@ function openNewRequestModal() {
 		window.saveNewRequest = async function() {
     const nationalId = $('#newNationalId').val().trim();
     const applicantName = $('#newApplicantName').val().trim();
+	const applicantPhone = $('#newApplicantPhone').val().trim();
     const category = $('#newCategory').val();
     const priority = $('#newPriority').val();
     const requestTitle = $('#newRequestTitle').val().trim();
@@ -3511,6 +3812,7 @@ function openNewRequestModal() {
         const newRequestId = await saveRequestToSupabase({
             nationalId: nationalId,
             applicantName: applicantName,
+			applicantPhone: applicantPhone,
             requestTitle: requestTitle,
             requestSummary: requestSummary,
             requestDate: new Date().toISOString().split('T')[0],
@@ -3540,6 +3842,7 @@ async function saveRequestToSupabase(requestData) {
         const requestDataMapped = {
             national_id: requestData.nationalId,
             applicant_name: requestData.applicantName,
+			applicant_phone: requestData.applicantPhone || null,
             request_title: requestData.requestTitle,
             request_summary: requestData.requestSummary,
             request_date: requestData.requestDate,
@@ -3677,8 +3980,8 @@ async function saveRequestToSupabase(requestData) {
                                         </div>
                                         
                                         <button class="btn btn-primary" onclick="updateRequestDetails(${request.id})">
-                                            <i class="fas fa-save me-2"></i>حفظ التحديثات
-                                        </button>
+											<i class="fas fa-save me-2"></i>حفظ التحديثات
+										</button>
                                     </div>
                                 </div>
                             </div>
@@ -3700,12 +4003,24 @@ async function saveRequestToSupabase(requestData) {
         }
 
      
-// تحديث تفاصيل الطلب
 async function updateRequestDetails(requestId) {
     const newComments = $('#updateComments').val().trim();
     const newStatus = $('#updateStatus').val();
     
     try {
+        // ============================================
+        // تحديث البيانات محلياً أولاً لعرض التغيير فوراً
+        // ============================================
+        const requestIndex = allRequests.findIndex(r => r.id === requestId);
+        if (requestIndex !== -1) {
+            allRequests[requestIndex].comments = newComments;
+            allRequests[requestIndex].status = newStatus;
+            allRequests[requestIndex].updatedAt = new Date().toISOString();
+            
+            // تحديث عرض الجدول فوراً
+            renderRequestsTable();
+        }
+        
         // تحديث الطلب في قاعدة البيانات
         const { error } = await supabase
             .from('citizen_requests')
@@ -3724,10 +4039,12 @@ async function updateRequestDetails(requestId) {
         // عرض رسالة نجاح
         showNotification('تم تحديث حالة الطلب بنجاح', 'success');
         
-        // ============================================
-        // استخدام دالة التحديث المركزية
-        // ============================================
-        await updateMainPage();
+        // تحديث باقي العناصر في الصفحة
+        renderCategoriesGrid();
+        renderCategoryStatistics();
+        renderCategoryChart();
+        loadUrgentRequests();
+        updateStatistics();
         
         // إضافة للأنشطة
         addActivity('تحديث طلب', `تم تحديث حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
@@ -3737,7 +4054,6 @@ async function updateRequestDetails(requestId) {
         showNotification('فشل تحديث الطلب. تحقق من اتصال الإنترنت', 'error');
     }
 }
-
 // تحديث الصفحة الرئيسية بالكامل
 async function updateMainPage() {
     try {
@@ -3799,6 +4115,45 @@ async function updateRequestStatus(requestId, newStatus) {
     } catch (error) {
         console.error('Error updating status:', error);
         showNotification('فشل تحديث الحالة. تحقق من اتصال الإنترنت', 'error');
+    }
+}
+async function updateRequestInSupabase(requestId, requestData) {
+    if (!supabase) {
+        throw new Error('Supabase client is not available');
+    }
+    
+    try {
+        const requestDataMapped = {
+            national_id: requestData.nationalId,
+            applicant_name: requestData.applicantName,
+            phone: requestData.applicantPhone || null,  // ← تعديل هنا
+            request_title: requestData.requestTitle,
+            request_summary: requestData.requestSummary,
+            request_date: requestData.requestDate,
+            category: requestData.category,
+            status: requestData.status,
+            file_url: requestData.file,
+            comments: requestData.comments,
+            priority: requestData.priority,
+            updated_by: currentUser.id,
+            updated_at: new Date().toISOString()
+        };
+        
+        const { data, error } = await supabase
+            .from('citizen_requests')
+            .update(requestDataMapped)
+            .eq('id', requestId)
+            .select();
+        
+        if (error) {
+            console.error('Error updating request:', error);
+            throw error;
+        }
+        
+        return data[0];
+    } catch (error) {
+        console.error('Failed to update request:', error);
+        throw error;
     }
 }
         // تعديل الطلب
@@ -3922,7 +4277,9 @@ function refreshData() {
             } else {
                 $('#floatingAddBtn').hide();
             }
-            
+            if (pageId === 'status') {
+				initStatusPage();
+			}
             // تحديث المخططات إذا لزم الأمر
             if (pageId === 'reports') {
                 updateReportsPage();
@@ -4258,6 +4615,28 @@ function refreshData() {
             loadProfileData();
             setupProfilePageEvents();
         }
+		// إعداد صفحة حالة الطلب ← أضف هذا هنا
+		function initStatusPage() {
+		// البحث أثناء الكتابة
+			$('#statusSearchInput').on('input', function() {
+				renderStatusTable();
+			});
+    
+		// تغيير فلتر الحالة
+			$('#statusFilterSelect').change(function() {
+				renderStatusTable();
+			});
+    
+		// تحديث البيانات
+			$('#refreshStatusBtn').click(async function() {
+				await loadRequestsFromSupabase();
+				renderStatusTable();
+				showNotification('تم تحديث البيانات بنجاح', 'success');
+			});
+    
+		// عرض الجدول عند التحميل الأول
+				renderStatusTable();
+		}
 
         // تحميل المستخدمين
         function loadUsers() {
@@ -5234,7 +5613,19 @@ window.deleteUser = deleteUser;
 window.updateUser = updateUser;
 window.saveNewRequest = saveNewRequest; // إضافة هذه السطر
 window.updateRequestDetails = updateRequestDetails; // إضافة هذه السطر
-    </script>
+window.sendWhatsAppStatus = sendWhatsAppStatus;
+// معالجة زر حفظ التحديثات
+$(document).on('click', '.btn-save-updates', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const requestId = $(this).data('request-id');
+    const newComments = $('#updateComments').val().trim();
+    const newStatus = $('#updateStatus').val();
+    
+    updateRequestDetails(requestId, newComments, newStatus);
+});
+</script>
 </body>
 
 </html>
