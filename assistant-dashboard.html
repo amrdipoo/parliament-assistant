@@ -38,6 +38,11 @@
             background-color: #f8fafc;
             min-height: 100vh;
         }
+		.grid {
+			  display: grid;
+			  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			  gap: 15px;
+			}
         
         .sidebar {
             background: linear-gradient(180deg, var(--primary-color) 0%, #1e40af 100%);
@@ -392,6 +397,7 @@
 <body>
     <!-- التطبيق الرئيسي -->
     <div id="appContent" class="app-content">
+		<img src="img/1.jpeg" width="120">
         <!-- الشريط الجانبي -->
         <nav class="sidebar">
             <div class="sidebar-header">
@@ -875,7 +881,12 @@
                         </div>
                     </div>
                 </div>
-                
+                <div class="grid">
+				  <div class="card">Members Search</div>
+				  <div class="card">Bills Tracker</div>
+				  <div class="card">Sessions Calendar</div>
+				  <div class="card">MP Details</div>
+				</div>
                 <!-- نتائج البحث المتقدم -->
                 <div class="row">
                     <div class="col-12">
@@ -5876,5 +5887,6 @@ $(document).on('click', '.btn-save-updates', function(e) {
 </body>
 
 </html>
+
 
 
